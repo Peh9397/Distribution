@@ -1,4 +1,4 @@
-# <h3>Distribution-team3</h3>
+# Distribution-team3
 3조 erp project 개발<br>
 2023.10.10 ~ 2023.11.13
 
