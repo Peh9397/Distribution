@@ -24,7 +24,7 @@ public class Employee {
 	
     // 직원 분류
     private int sortEmpCd; 		// 직원 코드
-	private int sorteName;		// 이름
+	private int sortName;		// 이름
 	private int sortJob;		// 직책
 	private int sortDept;		// 부서
 	private int sortAddDate;	// 등록일
