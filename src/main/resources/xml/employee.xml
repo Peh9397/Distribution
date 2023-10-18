@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="employeens">
+
+	<select id="list" resultType="employee">
+		select	*
+		from	EMPLOYEE		
+	</select>
+	
+	<insert id="insert" parameterType="employee">
+		insert into EMPLOYEE values	(#{EMPCD}, #{ENAME}, #{PASSWORD}, #{DEPT}, #{JOB},
+					#{TEL}, #{AUTHORITY}, sysdate, 'N', #{REMARK}, null)
+	</insert>
+	
+	<select id="search" parameterType="employee" resultType="employee">
+		select	*
+		from	(select a.*,
+						rowNum rn
+				from	(select	*
+						from	EMPLOYEE
+						<where>
+							<if test="EMPCD != null and EMPCD != ''">
+								and EMPCD like '%' || #{EMPCD} || '%'
+							</if>
+							<if test="ENAME != null and ENAME != ''">
+								and ENAME like '%' || #{ENAME} || '%'
+							</if>
+							<if test="ADDFROMDATE != null or ADDTODATE != null">
+								<if test="ADDFROMDATE == null">
+									and ADDDATE between '0001-01-01' and #{ADDTODATE}
+								</if>
+								<if test="ADDTODATE == null">
+									and ADDDATE between #{ADDFROMDATE} and '9999-12-31'
+								</if>
+								<if test="ADDFROMDATE != null and ADDTODATE != null">
+									and ADDDATE between #{ADDFROMDATE} and #{ADDTODATE}
+								</if>
+							</if>
+							<if test="JOB != null and JOB != 'null'">
+								and JOB like '%' || #{JOB} || '%'
+							</if>
+							<if test="DEPT != null and DEPT != 'null'">
+								and DEPT like '%' || #{DEPT} || '%'
+							</if>
+							<if test="AUTHORITY != null and AUTHORITY != 'null'">
+								and AUTHORITY like '%' || #{AUTHORITY} || '%'
+							</if>
+							<if test="DEL != 'All'">
+								and DEL = #{DEL}
+							</if>
+						</where>
+						order by 
+							<if test="SORTEMPCD == 1">
+								EMPCD desc
+							</if>
+							<if test="SORTEMPCD == 2">
+								EMPCD asc
+							</if>
+							<if test="SORTENAME == 1">
+								ENAME desc
+							</if>
+							<if test="SORTENAME == 2">
+								ENAME asc
+							</if>
+							<if test="SORTJOB == 1">
+								JOB desc
+							</if>
+							<if test="SORTJOB == 2">
+								JOB asc
+							</if>
+							<if test="SORTDEPT == 1">
+								DEPT desc
+							</if>
+							<if test="SORTDEPT == 2">
+								DEPT asc
+							</if>
+							<if test="SORTADDDATE == 1">
+								ADDDATE desc
+							</if>
+							<if test="SORTADDDATE == 2">
+								ADDDATE asc
+							</if>
+							<if test="SORTAUTHORITY == 1">
+								AUTHORITY desc
+							</if>
+							<if test="SORTAUTHORITY == 2">
+								AUTHORITY asc
+							</if>
+						) a
+				)
+		where	rn between #{startRow} and #{endRow}
+	</select>
+	
+	<update id="update" parameterType="employee">
+		update	EMPLOYEE
+		set		ENAME = #{ENAME},
+				JOB = #{JOB},
+				DEPT = #{DEPT},
+				AUTHORITY = #{AUTHORITY},
+				STATEDATE = sysdate
+		where	EMPCD = #{EMPCD}
+	</update>
+	
+	<select id="select" parameterType="string" resultType="employee">
+		select * from EMPLOYEE where EMPCD = #{EMPCD}
+	</select>
+	
+	<select id="getTotal" parameterType="employee" resultType="integer">
+		select	count(*)
+		from	EMPLOYEE
+		<where>
+			<if test="EMPCD != null and EMPCD != ''">
+				and EMPCD like '%' || #{EMPCD} || '%'
+			</if>
+			<if test="ENAME != null and ENAME != ''">
+				and ENAME like '%' || #{ENAME} || '%'
+			</if>
+			<if test="ADDFROMDATE != null or ADDTODATE != null">
+				<if test="ADDFROMDATE == null">
+					and ADDDATE between '0001-01-01' and #{ADDTODATE}
+				</if>
+				<if test="ADDTODATE == null">
+					and ADDDATE between #{ADDFROMDATE} and '9999-12-31'
+				</if>
+				<if test="ADDFROMDATE != null and ADDTODATE != null">
+					and ADDDATE between #{ADDFROMDATE} and #{ADDTODATE}
+				</if>
+			</if>
+			<if test="JOB != null and JOB != 'null'">
+				and JOB like '%' || #{JOB} || '%'
+			</if>
+			<if test="DEPT != null and DEPT != 'null'">
+				and DEPT like '%' || #{DEPT} || '%'
+			</if>
+			<if test="AUTHORITY != null and AUTHORITY != 'null'">
+				and AUTHORITY like '%' || #{AUTHORITY} || '%'
+			</if>
+			<if test="del != 'All'">
+				and DEL = #{DEL}
+			</if>
+		</where>
+		order by ADDDATE desc
+	</select>
+	
+	<update id="employeeDelete" parameterType="String">
+		update	EMPLOYEE
+		set		DEL = 'Y',
+				STATEDATE = sysdate
+		where	EMPCD = #{EMPCD}
+	</update>
+	
+	<update id="employeeRestore" parameterType="String">
+		update	EMPLOYEE
+		set		DEL = 'N',
+				STATEDATE = sysdate
+		where	EMPCD = #{EMPCD}
+	</update>
+	
+	<select id="getSALCount" parameterType="String" resultType="integer">
+		select	count(*) + 1
+		from	EMPLOYEE
+		where	DEPT = #{DEPT}
+	</select>
+	
+	<select id="listForExcel" parameterType="employee" resultType="employee">
+		select	*
+		from	EMPLOYEE
+		where	EMPCD = #{EMPCD}
+	</select>
+</mapper>
