@@ -6,29 +6,29 @@ import lombok.Data;
 
 @Data
 public class Employee {
-	private String EMPCD;		// 직원코드
-	private String ENAME;		// 직원명
-	private String PASSWORD;	// 비밀번호
-	private String DEPT;		// 부서
-	private String JOB;			// 직책
-	private String TEL;			// 연락처
-	private String AUTHORITY;	// 승인권한
-	private Date   ADDDATE;		// 등록일
-	private String DEL;			// 삭제
-	private String REMARK;		// 비고
-	private Date   STATEDATE;	// 최종변경일
+	private String empCd;		// 직원코드
+	private String eName;		// 직원명
+	private String password;	// 비밀번호
+	private String dept;		// 부서
+	private String job;			// 직책
+	private String tel;			// 연락처
+	private String authority;	// 승인권한
+	private Date   addDate;		// 등록일
+	private String del;			// 삭제
+	private String remark;		// 비고
+	private Date   stateDate;	// 최종변경일
 	
 	// 등록일
-	private Date ADDFROMDATE;   // 이 날짜부터 ~
-    private Date ADDTODATE;	    // ~ 이 날짜까지
+	private Date addFromDate;   // 이 날짜부터 ~
+    private Date addToDate;	    // ~ 이 날짜까지
 	
     // 직원 분류
-    private int SORTEMPCD; 		// 직원 코드
-	private int SORTENAME;		// 이름
-	private int SORTJOB;		// 직책
-	private int SORTDEPT;		// 부서
-	private int SORTADDDATE;	// 등록일
-	private int SORTAUTHORITY;	// 승인권한
+    private int sortEmpCd; 		// 직원 코드
+	private int sorteName;		// 이름
+	private int sortJob;		// 직책
+	private int sortDept;		// 부서
+	private int sortAddDate;	// 등록일
+	private int sortAuthority;	// 승인권한
     
 	private int currentPage;
 	private int rowPerPage;
