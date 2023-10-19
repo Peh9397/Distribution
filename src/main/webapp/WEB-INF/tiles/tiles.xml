@@ -21,12 +21,12 @@
 	
 	<!-- nolay폴더 안에 {1}에 jsp이름 -->
 	<definition name="nolay/*" extends="nolay">
-		<put-attribute name="body" value="/WEB-INF/views/nolay/{1}.jsp" />
+		<put-attribute name="body" value="/WEB-INF/views/nolay/{2}.jsp" />
 	</definition>
 	
 	<!-- {1}폴더 안에 {2}에 jsp이름 -->
-	<!-- 	<definition name="*/*" extends="tilesbase">
+	<definition name="*/*" extends="tilesbase">
 		<put-attribute name="body" value="/WEB-INF/views/{1}/{2}.jsp" />
-	</definition> -->
+	</definition>
 	
 </tiles-definitions>
