@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<typeAliases>
+		<!-- <typeAlias alias="Buyer" type="com.green.distribution.model.Buyer"/>
+		<typeAlias alias="Employee" type="com.green.distribution.model.Employee"/>
+		<typeAlias alias="OrderApproval" type="com.green.distribution.model.OrderApproval"/>
+		<typeAlias alias="OrderProduct" type="com.green.distribution.model.OrderProduct"/>		 -->
+		<!-- <typeAlias alias="Pricing" type="com.green.distribution.model.Pricing"/> -->
+		<!-- <typeAlias alias="Product" type="com.green.distribution.model.Product"/>		 -->
+	</typeAliases>
+	<mappers>
+	<!-- 	<mapper resource="xml/Buyer.xml"/>
+		<mapper resource="xml/Employee.xml"/>
+		<mapper resource="xml/OrderApproval.xml"/>
+		<mapper resource="xml/OrderProduct.xml"/> -->
+		<!-- <mapper resource="xml/Pricing.xml"/> -->
+		<!-- <mapper resource="xml/Product.xml"/> -->
+	</mappers>
+</configuration>
