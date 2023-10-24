@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="buyerns">
+
+	<select id="list" resultType="buyer">
+		select * from BUYER order by adddate desc
+	</select>
+	
+	<insert id="insert" parameterType="buyer">
+		insert into BUYER values (#{buyerCd}, #{bname}, #{companyNo}, #{ceo}, #{address}, #{manager}, #{tel},
+		#{email}, sysdate, 'n', #{remark}, null)
+	</insert>
+	
+	<update id="delete" parameterType="String">
+		update BUYER set del='y', statedate = sysdate where BUYERCD=#{buyerCd}
+	</update>
+	
+	<update id="update" parameterType="buyer">
+		update BUYER set BNAME = #{bname}, MANAGER = #{manager}, TEL = #{tel}, EMAIL = #{email},
+				ADDRESS = #{address}, DEL ='N', STATEDATE = sysdate
+		where  BUYERCD=#{buyerCd}
+	</update>
+	
+	<select id="search" parameterType="buyer" resultType="buyer">
+		select	*
+		from	(select a.*, rowNum rn from	(select * from BUYER
+							<where>
+							<if test="buyerCd != null and buyerCd != ''">
+								(BUYERCD like '%' || #{buyerCd} || '%'
+								or BNAME like '%' || #{buyerCd} || '%')
+							</if>
+							<if test="manager != null and manager != 'null'">
+								and MANAGER like '%' || #{manager} || '%'
+							</if>
+							<if test="tel != null and tel != 'null'">
+								and TEL like '%' || #{tel} || '%'
+							</if>
+							<if test="email != null and email != 'null'">
+								and EMAIL like '%' || #{email} || '%'
+							</if>
+							<if test="address != null and address != 'null'">
+								and ADDRESS like '%' || #{address} || '%'
+							</if>
+							<if test="del != 'All'">
+								and DEL = #{del}
+							</if>
+						</where>
+						order by
+							<if test="sortBuyerCd == 1">
+								BUYERCD desc
+							</if>
+							<if test="sortBuyerCd == 2">
+								BUYERCD asc
+							</if>		
+							<if test="sortBname == 1">
+								BNAME desc
+							</if>
+							<if test="sortBname == 2">
+								BNAME asc
+							</if>		
+							<if test="sortManager == 1">
+								MANAGER desc
+							</if>
+							<if test="sortManager == 2">
+								MANAGER asc
+							</if>		
+							<if test="sortTel == 1">
+								TEL desc
+							</if>
+							<if test="sortTel == 2">
+								TEL asc
+							</if>		
+							<if test="sortEmail == 1">
+								EMAIL desc
+							</if>
+							<if test="sortEmail == 2">
+								EMAIL asc
+							</if>		
+							<if test="sortAddress == 1">
+								ADDRESS desc
+							</if>
+							<if test="sortAddress == 2">
+								ADDRESS asc
+							</if>
+							<if test="sortAdddate == 1">
+								ADDDATE desc
+							</if>
+							<if test="sortAdddate == 2">
+								ADDDATE asc
+							</if>		
+							<if test="sortStateDate == 1">
+								STATEDATE desc
+							</if>
+							<if test="sortStateDate == 2">
+								STATEDATE asc
+							</if>
+						) a
+				)
+		where	rn between #{startRow} and #{endRow}
+	</select>
+	
+	<select id="ndlist" resultType="buyer">
+		select  * 
+		from  BUYER 
+		where  DEL='N' 
+		order by ADDDATE desc
+	</select>
+	
+	<select id="getTotal" parameterType="buyer" resultType="integer">
+		select count(*) from BUYER
+		<where>
+			<if test="buyerCd !=null and buyerCd != ''">
+				BUYERCD like '%' || #{buyerCd} || '%'
+			</if>
+			<if test="bname !=null and bname != ''">
+				BNAME like '%' || #{bname} || '%'
+			</if>
+			<if test="manager != null and manager != 'null'">
+				and MANAGER like '%' || #{manager} || '%'
+			</if>
+			<if test="tel != null and tel != 'null'">
+				and TEL like '%' || #{tel} || '%'
+			</if>
+			<if test="email != null and email != 'null'">
+				and EMAIL like '%' || #{email} || '%'
+			</if>
+			<if test="address != null and address != 'null'">
+				and ADDRESS like '%' || #{address} || '%'
+			</if>
+			<if test="del != 'All'">
+				and DEL = #{del}
+			</if>
+		</where>
+	</select>
+	
+	<select id="dlist" resultType="buyer">
+		select * from BUYER where del='Y' order by adddate desc
+	</select>
+	
+	<select id="select" parameterType="String" resultType="buyer">
+		select * from BUYER where BUYERCD = #{buyerCd}
+	</select>
+	
+	<update id="buyerRestore" parameterType="String">
+		update BUYER set del= 'N', STATEDATE = sysdate where BUYERCD = #{buyerCd}
+	</update>
+	
+	<select id="listForExcel" parameterType="buyer" resultType="buyer">
+		select * from BUYER where BUYERCD =#{buyerCd}
+	</select>
+	
+	<select id="selectCode" parameterType="String" resultType="String">
+		select LPAD(count(*)+1, 3, 0) from BUYER where BUYERCD like '%' || #{autoCompleteCd} || '%'
+	</select>
+	
+</mapper>

@@ -46,8 +46,8 @@
 							<if test="AUTHORITY != null and AUTHORITY != 'null'">
 								and AUTHORITY like '%' || #{AUTHORITY} || '%'
 							</if>
-							<if test="DEL != 'All'">
-								and DEL = #{DEL}
+							<if test="del != 'All'">
+								and del = #{del}
 							</if>
 						</where>
 						order by 
@@ -67,6 +67,12 @@
 								JOB desc
 							</if>
 							<if test="SORTJOB == 2">
+								JOB asc
+							</if>
+							<if test="SORTTEL == 1">
+								JOB desc
+							</if>
+							<if test="SORTTEL == 2">
 								JOB asc
 							</if>
 							<if test="SORTDEPT == 1">
@@ -137,7 +143,7 @@
 				and AUTHORITY like '%' || #{AUTHORITY} || '%'
 			</if>
 			<if test="del != 'All'">
-				and DEL = #{DEL}
+				and del = #{del}
 			</if>
 		</where>
 		order by ADDDATE desc
@@ -145,14 +151,14 @@
 	
 	<update id="employeeDelete" parameterType="String">
 		update	EMPLOYEE
-		set		DEL = 'Y',
+		set		del = 'Y',
 				STATEDATE = sysdate
 		where	EMPCD = #{EMPCD}
 	</update>
 	
 	<update id="employeeRestore" parameterType="String">
 		update	EMPLOYEE
-		set		DEL = 'N',
+		set		del = 'N',
 				STATEDATE = sysdate
 		where	EMPCD = #{EMPCD}
 	</update>
