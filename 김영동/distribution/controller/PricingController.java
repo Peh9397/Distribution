@@ -19,5 +19,7 @@ public class PricingController {
 //	 * @Autowired private ProductService ps;
 //	 */
 	@RequestMapping("nolay/pricingList")
-	public void pricingList() {}
+	public void pricingList() {
+		System.out.println("pricingList");
+	}
 }
