@@ -13,5 +13,8 @@ public interface EmployeeService {
 	List<Employee> search(Employee employee);
 
 	void insert(Employee employee);
+	
+//  로그인 
+	Employee select(String empcd);
 
 }
