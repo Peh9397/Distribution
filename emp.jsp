@@ -194,6 +194,10 @@
 							<td><input type="PASSWORD" name="PASSWORD"></td>
 						</tr>
 						<tr>
+						<th>연락처</th>
+						<td><input type="text" placeholder="010-****-****" name="TEL"></td>
+					</tr>
+						<tr>
 							<th>직원명</th>
 							<td><input type="text" name="ENAME"></td>
 						</tr>
