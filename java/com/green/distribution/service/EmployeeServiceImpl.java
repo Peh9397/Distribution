@@ -9,24 +9,46 @@ import com.green.distribution.dao.EmployeeDao;
 import com.green.distribution.model.Employee;
 
 @Service
-public class EmployeeServiceImpl implements EmployeeService{
-	@Autowired
+public class EmployeeServiceImpl implements EmployeeService {
+@Autowired
 	private EmployeeDao ed;
-	
-	public List<Employee> list() {
-		return ed.list();
-	}
-	public int getTotal(Employee employee) {
-		return ed.getTotal(employee);
-	}
-	public List<Employee> search(Employee employee) {
-		return ed.search(employee);
-	}
-	public void insert(Employee employee) {
-		ed.insert(employee);
-	}
-	@Override
-	public Employee select(String empcd) {
-		return ed.select(empcd);
-	}
+public List<Employee> list() {
+	return ed.list();
+}
+@Override
+public int getTotal(Employee employee) {
+	return ed.getTotal(employee);
+}
+@Override
+public List<Employee> search(Employee employee) {
+	return ed.search(employee);
+}
+@Override
+public void insert(Employee employee) {
+	ed.insert(employee);
+}
+@Override
+public void update(Employee employee) {
+	ed.update(employee);
+}
+@Override
+public void employeeDelete(String EMPCD) {
+	ed.employeeDelete(EMPCD);	
+}
+@Override
+public void employeeRestore(String EMPCD) {
+	ed.employeeRestore(EMPCD);
+}
+@Override
+public int getSALCount(String DEPT) {
+	return ed.getSALCount(DEPT);
+}
+@Override
+public Employee listForExcel(Employee item) {
+	return ed.listForExcel(item);
+}
+@Override
+public Employee select(String EMPCD) {
+	return ed.select(EMPCD);
+}
 }

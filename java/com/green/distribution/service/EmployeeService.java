@@ -13,8 +13,17 @@ public interface EmployeeService {
 	List<Employee> search(Employee employee);
 
 	void insert(Employee employee);
-	
-//  로그인 
-	Employee select(String empcd);
+
+	void update(Employee employee);
+
+	void employeeDelete(String EMPCD);
+
+	void employeeRestore(String EMPCD);
+
+	int getSALCount(String DEPT);
+
+	Employee listForExcel(Employee item);
+
+	Employee select(String EMPCD);
 
 }

@@ -14,6 +14,16 @@ public interface EmployeeDao {
 
 	void insert(Employee employee);
 
-	Employee select(String empcd);
+	void update(Employee employee);
+
+	void employeeDelete(String EMPCD);
+
+	void employeeRestore(String eMPCD);
+
+	int getSALCount(String DEPT);
+
+	Employee listForExcel(Employee item);
+
+	Employee select(String eMPCD);
 
 }
