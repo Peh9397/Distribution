@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles"%>
+<%@ include file="head.jsp"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,12 +9,12 @@
 <title>Insert title here</title>
 </head>
 <body>
-	<div class="container">
+	<div class="main-container">
 		<div id="lastList">
-			<div id="approval">주문 요청 목록</div>
+			<div id="approval">승인대기목록</div>
 			<div id="order">주문 목록</div>
-			<div id="product">상품</div>
-			<div id="pricing">판매가</div>
+			<div id="product">제품 최근 목록</div>
+			<div id="pricing">판매가 최근 목록</div>
 		</div>
 	</div>
 </body>

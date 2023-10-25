@@ -33,194 +33,119 @@ url("./fonts/icofont.woff") format("woff");
   -webkit-font-smoothing: antialiased;
 }
 
-.icofont-boy:before
+.icofont-bank-alt:before
 {
-  content: "\eceb";
+  content: "\e961";
 }
 
-.icofont-business-man-alt-1:before
+.icofont-bank:before
 {
-  content: "\ecec";
+  content: "\e962";
 }
 
-.icofont-business-man-alt-2:before
+.icofont-barcode:before
 {
-  content: "\eced";
+  content: "\e963";
 }
 
-.icofont-business-man-alt-3:before
+.icofont-bill-alt:before
 {
-  content: "\ecee";
+  content: "\e964";
 }
 
-.icofont-business-man:before
+.icofont-billboard:before
 {
-  content: "\ecef";
+  content: "\e965";
 }
 
-.icofont-female:before
+.icofont-briefcase-1:before
 {
-  content: "\ecf0";
+  content: "\e966";
 }
 
-.icofont-funky-man:before
+.icofont-briefcase-2:before
 {
-  content: "\ecf1";
+  content: "\e967";
 }
 
-.icofont-girl-alt:before
+.icofont-businessman:before
 {
-  content: "\ecf2";
+  content: "\e968";
 }
 
-.icofont-girl:before
+.icofont-businesswoman:before
 {
-  content: "\ecf3";
+  content: "\e969";
 }
 
-.icofont-group:before
+.icofont-chair:before
 {
-  content: "\ecf4";
+  content: "\e96a";
 }
 
-.icofont-hotel-boy-alt:before
+.icofont-coins:before
 {
-  content: "\ecf5";
+  content: "\e96b";
 }
 
-.icofont-hotel-boy:before
+.icofont-company:before
 {
-  content: "\ecf6";
+  content: "\e96c";
 }
 
-.icofont-kid:before
+.icofont-contact-add:before
 {
-  content: "\ecf7";
+  content: "\e96d";
 }
 
-.icofont-man-in-glasses:before
+.icofont-files-stack:before
 {
-  content: "\ecf8";
+  content: "\e96e";
 }
 
-.icofont-people:before
+.icofont-handshake-deal:before
 {
-  content: "\ecf9";
+  content: "\e96f";
 }
 
-.icofont-support:before
+.icofont-id-card:before
 {
-  content: "\ecfa";
+  content: "\e970";
 }
 
-.icofont-user-alt-1:before
+.icofont-meeting-add:before
 {
-  content: "\ecfb";
+  content: "\e971";
 }
 
-.icofont-user-alt-2:before
+.icofont-money-bag:before
 {
-  content: "\ecfc";
+  content: "\e972";
 }
 
-.icofont-user-alt-3:before
+.icofont-pie-chart:before
 {
-  content: "\ecfd";
+  content: "\e973";
 }
 
-.icofont-user-alt-4:before
+.icofont-presentation-alt:before
 {
-  content: "\ecfe";
+  content: "\e974";
 }
 
-.icofont-user-alt-5:before
+.icofont-presentation:before
 {
-  content: "\ecff";
+  content: "\e975";
 }
 
-.icofont-user-alt-6:before
+.icofont-stamp:before
 {
-  content: "\ed00";
+  content: "\e976";
 }
 
-.icofont-user-alt-7:before
+.icofont-stock-mobile:before
 {
-  content: "\ed01";
-}
-
-.icofont-user-female:before
-{
-  content: "\ed02";
-}
-
-.icofont-user-male:before
-{
-  content: "\ed03";
-}
-
-.icofont-user-suited:before
-{
-  content: "\ed04";
-}
-
-.icofont-user:before
-{
-  content: "\ed05";
-}
-
-.icofont-users-alt-1:before
-{
-  content: "\ed06";
-}
-
-.icofont-users-alt-2:before
-{
-  content: "\ed07";
-}
-
-.icofont-users-alt-3:before
-{
-  content: "\ed08";
-}
-
-.icofont-users-alt-4:before
-{
-  content: "\ed09";
-}
-
-.icofont-users-alt-5:before
-{
-  content: "\ed0a";
-}
-
-.icofont-users-alt-6:before
-{
-  content: "\ed0b";
-}
-
-.icofont-users-social:before
-{
-  content: "\ed0c";
-}
-
-.icofont-users:before
-{
-  content: "\ed0d";
-}
-
-.icofont-waiter-alt:before
-{
-  content: "\ed0e";
-}
-
-.icofont-waiter:before
-{
-  content: "\ed0f";
-}
-
-.icofont-woman-in-glasses:before
-{
-  content: "\ed10";
+  content: "\e977";
 }
 
 [class^="icofont-"].icofont-duotone,

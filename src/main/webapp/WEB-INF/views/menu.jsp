@@ -9,16 +9,16 @@
 
 <style type="text/css">
 .menuContainer {
-	align-self: center;
 	height: 100%;
 }
 
 .menuNm {
 	color: #bfbfbf;
 	text-align: left;
-	width: 70%;
+	width: 75%;
 	cursor: pointer;
 	margin-top: 20px;
+	margin-left: 10px;
 	font-size: 17px;
 	font-weight: bold;
 }
@@ -38,7 +38,7 @@
 }
 
 i {
-	height: 25px;
+	height: 30%;
 }
 </style>
 
@@ -70,33 +70,31 @@ function content(data) {
 				<img style="width: 200px;" src="${path }/resources/images/distribution.png">
 			</a>
 		</div>
-		<div class="menuNm" onclick="content('/')">
-			<i class="icofont-package"></i> 상품 관리
-		</div>
-		<div class="menuNm" onclick="content('pricingList.do')">
-			<i class="icofont-price"></i> 판매가 관리
-		</div>
-		<div class="menuNm" onclick="content('buyer.do')">
-			<img id="icon"
-				src="/distribution/resources/images/handshake-deal.svg">
-				<i class="icofont-handshake-deal"></i> 구매자 관리
-		</div>
-		<div class="menuNm" onclick="content('order.do')">
-			<img id="icon" src="/distribution/resources/images/clip-board.svg">
-			<i class="icofont-clip-board"></i> <i class="icofont-tasks"></i> 주문 관리
-		</div>
-		<div class="menuNm" onclick="content('/')">
-			<img id="icon"
-				src="/distribution/resources/images/chart-arrows-axis.svg">
-				<i class="icofont-chart-arrows-axis"></i> 주문 현황
-		</div>
-		<c:if test="${sessionScope.job == '마스터' }">
+		<div class="container">
 			<div class="menuNm" onclick="content('/')">
-				<i class="icofont-checked"></i> 주문 승인
+				<i class="icofont-package icofont-md"></i> 상품 관리
 			</div>
-		</c:if>
-		<div class="menuNm" onclick="content('emp.do')">
-			<i class="icofont-group"></i> 직원
+			<div class="menuNm" onclick="content('pricingList.do')">
+				<i class="icofont-price icofont-md"></i> 판매가 관리
+			</div>
+			<div class="menuNm" onclick="content('buyer.do')">
+				<i class="icofont-briefcase-1 icofont-md"></i> 구매자 관리
+			</div>
+			<div class="menuNm" onclick="content('order.do')">
+				<i class="icofont-clip-board icofont-md icofont-md"></i>
+				<i class="icofont-tasks icofont-md"></i> 주문 관리
+			</div>
+			<div class="menuNm" onclick="content('/')">
+				<i class="icofont-presentation icofont-md"></i> 주문 현황
+			</div>
+			<c:if test="${sessionScope.JOB == '마스터' }">
+				<div class="menuNm" onclick="content('/')">
+					<i class="icofont-checked icofont-md"></i> 주문 승인
+				</div>
+			</c:if>
+			<div class="menuNm" onclick="content('emp.do')">
+				<i class="icofont-id-card icofont-md"></i> 직원
+			</div>
 		</div>
 	</div>
 </body>
