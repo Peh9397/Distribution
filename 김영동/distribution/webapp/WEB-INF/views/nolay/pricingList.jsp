@@ -5,8 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<c:set var="path" value="${pageContext.request.contextPath }"></c:set>
-<title>판매가</title>
+<title>Insert title here</title>
 </head>
 <body>
 	<div class="main-container">

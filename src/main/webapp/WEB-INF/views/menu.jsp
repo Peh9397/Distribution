@@ -1,20 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ include file="head.jsp"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<c:set var="path" value="${pageContext.request.contextPath }"></c:set>
-<link rel="stylesheet" href="${path }/resources/icofont/icofont.min.css">
-<link rel="stylesheet"
-	href="${path }/resources/icofont2/icofont.min.css">
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css">
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-<script
-	src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
 <title>Insert title here</title>
 
 <style type="text/css">
@@ -52,40 +42,60 @@ i {
 }
 </style>
 
+<script type="text/javascript">
+function content(data) {
+	var addr = data;
+	
+	var ajaxOption = {
+		url : addr,
+		async : true,
+		type : "POST",
+		dataType : "html",
+		cache : false
+	};
+	
+	$.ajax(ajaxOption).done(function (data) {
+		$('#layoutBody').children().remove();
+		$('#layoutBody').html(data);
+	})
+	
+}
+</script>
+
 </head>
 <body>
 	<div class="menuContainer">
 		<div id="logo">
-			<img style="width: 200px;"
-				src="${path }/resources/images/distribution.png">
+			<a href="${path }/main.do">
+				<img style="width: 200px;" src="${path }/resources/images/distribution.png">
+			</a>
 		</div>
-		<div class="menuNm" onclick="/">
+		<div class="menuNm" onclick="content('/')">
 			<i class="icofont-package"></i> 상품 관리
 		</div>
-		<div class="menuNm" onclick="/">
+		<div class="menuNm" onclick="content('pricingList.do')">
 			<i class="icofont-price"></i> 판매가 관리
 		</div>
-		<div class="menuNm" onclick="/">
+		<div class="menuNm" onclick="content('buyer.do')">
 			<img id="icon"
-				src="/distribution/resources/images/handshake-deal.svg"> <i
-				class="icofont-handshake-deal"></i> 구매자 관리
+				src="/distribution/resources/images/handshake-deal.svg">
+				<i class="icofont-handshake-deal"></i> 구매자 관리
 		</div>
-		<div class="menuNm" onclick="/">
+		<div class="menuNm" onclick="content('order.do')">
 			<img id="icon" src="/distribution/resources/images/clip-board.svg">
-			<i class="icofont-clip-board"></i> <i class="icofont-tasks"></i> 주문
-			관리
+			<i class="icofont-clip-board"></i> <i class="icofont-tasks"></i> 주문 관리
 		</div>
-		<div class="menuNm" onclick="/">
+		<div class="menuNm" onclick="content('/')">
 			<img id="icon"
-				src="/distribution/resources/images/chart-arrows-axis.svg"> <i
-				class="icofont-chart-arrows-axis"></i> 주문 현황
+				src="/distribution/resources/images/chart-arrows-axis.svg">
+				<i class="icofont-chart-arrows-axis"></i> 주문 현황
 		</div>
-		<c:if test="${sessionScope.job == '팀장' }">
-			<div class="menuNm" onclick="/">
+		<c:if test="${sessionScope.job == '마스터' }">
+			<div class="menuNm" onclick="content('/')">
 				<i class="icofont-checked"></i> 주문 승인
 			</div>
 		</c:if>
-		<div class="menuNm" onclick="${path }/nolay/emp.do">
+		<div class="menuNm" onclick="content('emp.do')">
 			<i class="icofont-group"></i> 직원
 		</div>
 	</div>

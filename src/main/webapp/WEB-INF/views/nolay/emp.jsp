@@ -6,11 +6,71 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-
+<style type="text/css">
+	input:focus {
+		outline: none;
+	}
+	
+	#searchBox {
+		display: flex;
+		border: 1px solid #bfbfbf;
+		padding: 10px;
+	}
+	
+	.search-sub-div {
+		display: inline-flex;
+		justify-content: space-between;
+		flex-direction: row;
+	}
+	
+	.search-item-div {
+		flex-grow: 1;
+		margin-right: 10px;
+	}
+	
+	#searchBtn, #initBtn {
+		width: 85px;
+		height: 45px;
+		background-color: #1b1b1b;
+		color: #ffffff;
+		text-align: center;
+		cursor: pointer;
+		border-radius: 7px;
+		border: none;
+	}
+	
+	input[type="date"], #limit {
+		cursor: pointer;
+	}
+	
+	.btn {
+		width: 50px;
+		height: 25px;
+		background-color: #44444c;
+		color: #ffffff;
+		text-align: center;
+		cursor: pointer;
+		border-radius: 7px;
+		border: none;
+		font-size: 11px;
+	}
+	
+	.table {
+		display: flex;
+		justify-content: center;
+		border: 1px solid #bfbfbf;
+		padding: 10px;
+		height: 50%;
+	}
+	
+	table {
+		width: 85%;
+	}
+</style>
 </head>
 <body>
-<div id="container">
-	<h1 class="menuName">직원 관리</h1>
+<div class="container">
+	<h2 class="menuName">직원 관리</h2>
 	<div id="searchBox">
 		<div class="searchInBox">
 			<form name="searchBoxx">
@@ -69,16 +129,16 @@
 		</div>
 		
 		<div id="button-div">
-		<button id="show" class="btn">직원 등록</button>
+		<button id="show" class="btn">등록</button>
 		<c:if test="${employee.del != 'Y'}">
-			<button type="button" onclick="deleteAction()" class="btn">직원 삭제</button>
+			<button type="button" onclick="deleteAction()" class="btn">삭제</button>
 		</c:if>
 		<c:if test="${employee.del == 'Y'}">
-			<button type="button" onclick="restoreAction()" class="btn">직원 복원</button>
+			<button type="button" onclick="restoreAction()" class="btn">복원</button>
 		</c:if>
 		<button id="excelBtn"><img alt="" src="/distribution/resources/images/Excel.png" id="excelImg"></button>
 		
-		<div id="page">
+		<div id="page" align="right" style="margin-bottom: 10px;">
 			<form name="itemLimit">
 				<select name="rowPerPage" id="limit">
 					<option value="20" <c:if test="${employee.rowPerPage == 5 }">selected="selected"</c:if> >
@@ -97,7 +157,7 @@
 			</form>
 		</div>
 	</div>
-	<div class="table" style="height: 600px;">
+	<div class="table">
 		<table class="list">
 			<tr>
 				<th class="fixed">

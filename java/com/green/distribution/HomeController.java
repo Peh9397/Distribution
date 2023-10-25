@@ -16,27 +16,32 @@ public class HomeController {
 	@Autowired
 	private EmployeeService es;
 	
-	@GetMapping("nolay/loginForm")
+	@GetMapping("loginForm")
 	public String loginForm() {
 		return "/nolay/loginForm";
 	}
 	
 	@PostMapping("login")
-	public String login(Employee employee, Model model, HttpSession session) {
-		Employee emp2 = es.select(employee.getEMPCD());
+	public void login(Employee employee, Model model, HttpSession session) {
 		int result = 0;
-		if (emp2 == null) result = -1;	// 없는cd
-		else if (employee.getPASSWORD().equals(employee.getPASSWORD())) {
-			result = -1;	// 성공(일치)
-		}
+		Employee employee2 = es.select(employee.getEMPCD());
+		if (employee2 == null || employee2.getDel().equals("y")) result = -1;	// 없는cd
+		else if (employee.getPASSWORD().equals(employee2.getPASSWORD())) {
+			result = 1;	// 성공(일치)
+			session.setAttribute("EMPCD", employee.getEMPCD());
+		}	
 		model.addAttribute("result", result);
-		return "/login";
 	}
 	
 	@GetMapping("logout")
 	public String logout(HttpSession session) {
-		session.invalidate();
-		return "logout";
+		session.invalidate();	// invalidate : session 데이터 지우기, logout은 세션을 날리는 것
+		return "/logout";
 	}
-		
+	
+	@GetMapping("main")
+	public String main() {
+		return "/main";
+	}
+
 }
