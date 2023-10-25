@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Distribute</title>
 
 <style type="text/css">
 /* 입력창 라인 숨기기 */
@@ -17,17 +17,13 @@ input:focus {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	height: 100%;
+	height: 96%;
 }
 
 .loginForm {
 	width: 270px;
 	height: 315px;
 	background-color: #44444c;
-}
-
-.loginBox {
-	
 }
 
 .loginInput {
@@ -63,7 +59,7 @@ input:focus {
 <body>
 	<div class="login">
 		<div class="loginForm" align="center">
-			<form action="login.do" method="post">
+			<form action="${path }/login.do" method="post">
 				<div class="loginBox">
 					<img src="${path }/resources/images/distribution.png" class="logo">
 					<div>
@@ -71,8 +67,8 @@ input:focus {
 							required="required" autofocus="autofocus" placeholder="직원코드">
 					</div>
 					<div>
-						<input class="loginInput" type="text" name="PASSWORD"
-							required="required" autofocus="autofocus" placeholder="비밀번호">
+						<input class="loginInput" type="password" name="PASSWORD"
+							required="required" placeholder="비밀번호">
 					</div>
 					<div>
 						<input class="loginInputBtn" id="loginBtn" type="submit"
@@ -80,6 +76,11 @@ input:focus {
 					</div>
 				</div>
 			</form>
+		</div>
+	</div>
+	<div class="footer" style="background-color: #e5e5e5; height: 38px;">
+		<div style="font-size: 12px; color: #44444c; text-align: center;">
+			Copyright@ 2023 Distribution. All Rights Reserved.
 		</div>
 	</div>
 </body>
