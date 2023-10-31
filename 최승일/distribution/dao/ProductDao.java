@@ -27,4 +27,8 @@ public interface ProductDao {
 
 	Product listForExcel(Product item);
 
+	List<Product> list();
+
+	List<Product> activeList();
+
 }

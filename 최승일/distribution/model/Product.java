@@ -3,11 +3,11 @@ package com.green.distribution.model;
 import java.sql.Date;
 
 import lombok.Data;
-import scala.Int;
+
 @Data
 public class Product {
 	private String productCd; // --상품코드 
-	private String  pName; //--상품명
+	private String  pname; //--상품명
 	private int stock;  //-- 재고
 	private String  unit; //--단위
 	private String  category; //-- 분류
@@ -24,7 +24,7 @@ public class Product {
 	private int sortStock;
 	private int sortUnit;
 	private int sortCategory;
-	private int sortAdddate;
+	private int sortAddDate;
 	private int sortStatedate;
 	private int sortDel;
   

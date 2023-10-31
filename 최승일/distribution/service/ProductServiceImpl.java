@@ -64,4 +64,14 @@ public class ProductServiceImpl implements ProductService {
 	public Product listForExcel(Product item) {
 		return pd.listForExcel(item);
 	}
+
+	@Override
+	public List<Product> list() {
+		return pd.list();
+	}
+
+	@Override
+	public List<Product> activeList() {
+		return pd.activeList();
+	}
 }

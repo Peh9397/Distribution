@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	<mapper namespace="productns">
+		<select id="productList" parameterType="map" resultType="product">
+			select 	* 
+			from 	(select a.*, rowNum RN from 
+						(select * from PRODUCT
+						<where>
+							<if test="product.productCd!=null and product.productCd != ''">
+									and productCd like '%' || #{product.productCd} || '%'
+							</if>
+							<if test="product.pname!=null and product.pname!='' ">
+									and pname like '%' || #{product.pname} || '%'
+							</if>
+							<if test="product.stock!=null and product.stock!='' ">
+									and stock like '%' || #{product.stock} || '%'
+							</if>
+							<if test="product.category!=null and product.category!='' ">
+									and category like '%' || #{product.category} || '%'
+							</if>
+							<if test="product.addDate != null or product.addDate2 != null">				
+								<if test="product.addDate == null">
+									and addDate between '0001-01-01' and #{product.addDate2}
+								</if>
+								<if test="product.addDate2 == null">
+									and addDate between #{product.addDate} and '9999-12-31'
+								</if>
+								<if test="product.addDate != null and product.addDate2 != null">
+									and addDate between #{product.addDate} and #{product.addDate2}
+								</if>				
+							</if>
+							
+							<if test='product.del=="N"'>
+									and del='n'	
+							</if>
+							<if test='product.del=="Y"'>
+									and del='y'							
+							</if>
+						</where>
+						order by
+							<if test="product.sortProductCd ==1">
+								productCd desc
+							</if>
+							<if test="product.sortProductCd ==2">
+								productCd asc
+							</if>
+							<if test="product.sortPname ==1">
+								pname desc
+							</if>
+							<if test="product.sortPname ==2">
+								pname asc
+							</if>
+							<if test="product.sortStock ==1">
+								stock desc
+							</if>
+							<if test="product.sortStock ==2">
+								stock asc
+							</if>
+							<if test="product.sortUnit ==1">
+								unit desc
+							</if>
+							<if test="product.sortUnit ==2">
+								unit asc
+							</if>
+							<if test="product.sortCategory ==1">
+								category desc
+							</if>
+							<if test="product.sortCategory ==2">
+								category asc
+							</if>
+							<if test="product.sortStateDate ==1">
+								stateDate desc
+							</if>
+							<if test="product.sortStateDate ==2">
+								StateDate asc
+							</if>
+							<if test="product.sortDel ==1">
+								Del desc
+							</if>
+							<if test="product.sortDel ==2">
+								Del asc
+							</if>
+							<if test="product.sortAddDate ==1">
+								AddDate desc
+							</if>
+							<if test="product.sortAddDate ==2">
+								AddDate asc
+							</if>
+						)
+					a) 
+			where 	rn between #{pagingBean.startRow} and #{pagingBean.endRow}
+			
+		</select>
+		<select id="getTotal" parameterType="map" resultType="integer">
+			select 	count(*) 
+			from product
+				<where>
+					<if test="product.productCd!=null and product.productCd != ''">
+								and productCd like '%' || #{product.productCd} || '%'
+						</if>
+						<if test="product.pname!=null and product.pname!='' ">
+								and pname like '%' || #{product.pname} || '%'
+						</if>
+						<if test="product.stock!=null and product.stock!='' ">
+								and stock like '%' || #{product.stock} || '%'
+						</if>
+						<if test="product.category!=null and product.category!='' ">
+								and category like '%' || #{product.category} || '%'
+						</if>
+						<if test="product.addDate!=null and product.addDate2!=null" >
+								and addDate between #{product.addDate} and #{product.addDate2} 
+						</if>
+						<if test='product.del=="n"'>
+								and del='n'	
+						</if>
+						<if test='product.del=="y"'>
+								and del='y'							
+						</if>
+				</where>
+		</select>
+		
+		<update id="checkRowDelete" parameterType="string">
+			update PRODUCT set del='y', statedate = sysdate where productCd=#{productCd}
+		</update>
+		
+		<insert id="insert" parameterType="product">
+			insert into PRODUCT values(#{productCd}, #{pname}, #{stock}, #{unit},#{category}, sysdate, 'n', null)
+		</insert>
+		
+		<select id="selectCode" parameterType="String" resultType="String">
+			select LPAD(count(*)+1,4,0) from PRODUCT where category = #{category}
+		</select>
+		
+	    <select id="list" resultType="product">
+	        select * from PRODUCT
+    	</select>
+    	
+    	<update id="update" parameterType="product">
+    		update 	PRODUCT 
+    		set 	pname=#{pname}, 
+    				stock=#{stock}, 
+    				unit=#{unit}, 
+    				category=#{category}, 
+    				stateDate=sysdate 
+    		where 	productCd=#{productCd}
+    	</update>
+    	
+    	<select id="insertselect" parameterType="product" resultType="product">
+    		select * from PRODUCT where pname = #{pname} and stock = #{stock} and unit= #{unit} and category= #{category}
+    	</select>
+    	
+    	<select id="allList" resultType="product">
+			select * from PRODUCT    	
+    	</select>
+    	
+    	<select id="activeList" resultType="product">
+			select	* 
+			from	PRODUCT 
+			where del = 'n'	
+    	</select>
+    	
+    	<select id="amountByProduct" parameterType="String" resultType="integer">
+    		select	nvl(sum(amount),0) 
+    		from	order_head h,
+    				order_item i, 
+    				PRODUCT mp
+    		where	i.product_cd = mp.product_cd
+    			and h.order_no = i.order_no
+    			and h.status = '승인'
+        		and h.orderdate between '2022.12.01' and '2022.12.31'
+        		and mp.product_cd = #{productCd}
+        </select>
+    	
+    	<select id="listForExcel" parameterType="product" resultType="product">
+    		select * from PRODUCT where productCd = #{productCd}
+    	</select>
+    	
+    	<select id="updateselect" parameterType="product" resultType="product">
+    		select * from PRODUCT where pname= #{pname} and stock = #{stock} and unit = #{unit} and category = #{category}
+    	</select>
+    </mapper>

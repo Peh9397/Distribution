@@ -1,28 +1,92 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
     <%@ include file="../head.jsp" %>
-	<%@ include file="../menu.jsp" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<style type="text/css">
+	input:focus {
+		outline: none;
+	}
+	
+	#searchBox {
+		display: flex;
+		border: 1px solid #bfbfbf;
+		padding: 10px;
+	}
+	
+	.search-sub-div {
+		display: inline-flex;
+		justify-content: space-between;
+		flex-direction: row;
+	}
+	
+	.search-item-div {
+		flex-grow: 1;
+		margin-right: 10px;
+	}
+	
+	#searchBtn, #initBtn {
+		width: 85px;
+		height: 45px;
+		background-color: #1b1b1b;
+		color: #ffffff;
+		text-align: center;
+		cursor: pointer;
+		border-radius: 7px;
+		border: none;
+	}
+	
+	input[type="date"], #limit {
+		cursor: pointer;
+	}
+	
+	.btn {
+		width: 50px;
+		height: 25px;
+		background-color: #44444c;
+		color: #ffffff;
+		text-align: center;
+		cursor: pointer;
+		border-radius: 7px;
+		border: none;
+		font-size: 11px;
+	}
+	
+	.table {
+		display: flex;
+		justify-content: center;
+		border: 1px solid #bfbfbf;
+		padding: 10px;
+		height: 50%;
+	}
+	
+	table {
+		width: 85%;
+	}
+	
+	#excelBtn, #excelImg {
+		width: 25px;
+		border: none;
+	}
+</style>
 </head>
 <body>
-<div id="container">
+<div class="container">
 	<h1 class="menuName">상품관리</h1>
 	<div id="searchBox">
 		<div class="searchInBox">
-			<form id="searchBoxx">
+			<form name="searchBoxx">
 				<input type="hidden" name="sortProductCd" value="${product.sortProductCd }">
 				<input type="hidden" name="sortPname" value="${product.sortPname }">
 				<input type="hidden" name="sortStock" value="${product.sortStock }" >
 				<input type="hidden" name="sortUnit" value="${product.sortUnit }">
 				<input type="hidden" name="sortCategory" value="${product.sortCategory }">
-				<input type="hidden" name="sortAdddate" value="${product.sortAdddate }">
+				<input type="hidden" name="sortAddDate" value="${product.sortAddDate }">
 				<input type="hidden" name="sortStatedate" value="${product.sortStatedate }">
 				<input type="hidden" name="sortDel" value="${product.sortDel }">
-				
 				<div class="search-sub-div">
 					<div class="search-item-div">
 						<div class="search-item-text">상품코드</div>
@@ -35,10 +99,10 @@
 					</div>
 					<div class="search-item-div">
 						<div class="search-item-text">상품명</div>
-						<input type="search" name="pName" value="${product.pName }" list="pnameList" class="enter">
+						<input type="search" name="pname" value="${product.pname}" list="pnameList" class="enter">
 						<datalist id="pnameList">
 							<c:forEach var="item" items="${allList }">
-								<option value="${item.pName }">${item.pName }</option>
+								<option value="${item.pname }">${item.pname }</option>
 							</c:forEach>
 						</datalist>
 					</div>
@@ -76,17 +140,17 @@
 								<c:if test="${product.del != null }">
 									<option value="null">모두
 								</c:if>
-								<c:if test="${product.del == 'N' }">
-									<option value="N" selected="selected">활성
+								<c:if test="${product.del == 'n' }">
+									<option value="n" selected="selected">활성
 								</c:if>
-								<c:if test="${product.del != 'N' }">
-									<option value="N">활성
+								<c:if test="${product.del != 'y' }">
+									<option value="n">활성
 								</c:if>
-								<c:if test="${product.del == 'Y' }">
-									<option value="Y" selected="selected">비활성
+								<c:if test="${product.del == 'y' }">
+									<option value="y" selected="selected">비활성
 								</c:if>
-								<c:if test="${product.del != 'Y' }">
-									<option value="Y">비활성
+								<c:if test="${product.del != 'y' }">
+									<option value="y">비활성
 								</c:if>
 							</select>
 						</div>
@@ -100,10 +164,10 @@
 		</div>
 
 	<div id="button-div">
-		<button id="show" class="btn">상품등록  </button>
+		<button id="show" class="btn">상품등록</button>
 		<button type="button" onclick="deleteAction()" class="btn">삭제</button>
-		<button id="excelBtn"><img alt="" src="/distribution/resources/image/Excel.png" id="excelImg"></button>
-	<div id="page">
+		<button id="excelBtn"><img alt="" src="/distribution/resources/images/Excel.png" id="excelImg"></button>
+	<div id="page" align="right" style="margin-bottom: 10px;">
 		<form name="page" >
 			<span>
 				<select id="listview">
@@ -156,27 +220,27 @@
 				<th class="fixed" id="sortStock">재고</th>
 				<th class="fixed" id="sortUnit">단위</th>
 				<th class="fixed" id="sortCategory">상품 카테고리</th>
-				<th class="fixed" id="sortAdddate">등록일</th>
+				<th class="fixed" id="sortAddDate">등록일</th>
 				<th class="fixed" id="sortStatedate">최종변경일</th>
 			</tr>
 			<c:forEach var="productList" items="${productList }">
-			<tr class="itemRow" <c:if test="${productList.del=='Y'}"> style="background-color: #c0c0c052;" }</c:if>>
+			<tr class="itemRow" <c:if test="${productList.del=='y'}"> style="background-color: #c0c0c052;" }</c:if>>
 				<td>
-				<c:if test="${productList.del=='Y'}">
+				<c:if test="${productList.del=='y'}">
 					<input type="checkbox" name="checkRow" value="${productList.productCd }" disabled="disabled" >
 				</c:if>
-				<c:if test="${productList.del!='Y'}">
+				<c:if test="${productList.del!='y'}">
 					<input type="checkbox" name="checkRow" value="${productList.productCd }" >
 				</c:if>
 				</td>
 				<td>${productList.rn }</td>
 				<td >${productList.productCd }</td>
-				<td class="editable">${productList.pName}</td>
+				<td class="editable">${productList.pname}</td>
 				<td class="editable">${productList.stock}</td>
 				<td class="editable">${productList.unit}</td>
 				<td>${productList.category}</td>
 				<td>${productList.addDate}</td>
-				<td>${productList.stateDate}</td>
+				<td>${productList.statedate}</td>
 				
 			</tr>
 			</c:forEach> 
@@ -219,7 +283,7 @@
 							</tr>
 							<tr>
 								<th>상품명</th>
-								<td><input type="text" name="pName" id="pName" required="required"></td>
+								<td><input type="text" name="pname" id="pname" required="required"></td>
 							</tr>
 							<tr>
 								<th>재고</th>
@@ -237,6 +301,7 @@
 			</div>
 		</div>
 	</div>
+</body>
 <script type="text/javascript">
 	// 등록 팝업 열기 닫기
 	function show() {
@@ -320,7 +385,7 @@
 		const item={
 			category: frm.category.value,
 			productCd: frm.productCd.value,
-			pName: frm.pName.value,
+			pname: frm.pname.value,
 			stock: frm.stock.value,
 			unit: frm.unit.value
 			};
@@ -345,7 +410,7 @@
 		    		$("input[name='category']").addClass('red');
 		    		alert("카테고리를 선택해주세요")
 		    	}else if(result == -3){
-		    		$("input[name='pName']").addClass('red');
+		    		$("input[name='pname']").addClass('red');
 		    	}else if(result == -4){
 		    		$("input[name='stock']").addClass('red');
 		    	}else if(result == -5){
@@ -364,8 +429,8 @@
    	      page= target.options[target.selectedIndex].value;     // 옵션 value 값
    	      const keyword = {
    	  			productCd : searchBoxx.productCd.value,	
-   	  			pname : searchBoxx.pName.value,	
-   	  			volume : searchBoxx.stock.value,	
+   	  			pname : searchBoxx.pname.value,	
+   	  			stock : searchBoxx.stock.value,	
    	  			category : searchBoxx.category.value,	
    	  			addDate : searchBoxx.addDate.value,	
    	  			addDate2 : searchBoxx.addDate2.value,	
@@ -377,7 +442,7 @@
 				sortStock : searchBoxx.sortStock.value,
 				sortUnit : searchBoxx.sortUnit.value,
 				sortCategory : searchBoxx.sortCategory.value,
-				sortAdddate : searchBoxx.sortAdddate.value,
+				sortAddDate : searchBoxx.sortAddDate.value,
 				sortStatedate : searchBoxx.sortStatedate.value,
 				sortDel : searchBoxx.sortDel.value
    	  				
@@ -439,7 +504,7 @@
 			             
 			             // td.eq(index)를 통해 값을 가져올 수도 있다.
 			              productCd = tdd.eq(2).text();
-			              pName = tdd.eq(3).text();
+			              pname = tdd.eq(3).text();
 			              stock = tdd.eq(4).text();
 			              unit = tdd.eq(5).text();
 			              category = tdd.eq(6).text();
@@ -451,7 +516,7 @@
 		    			     traditional: true,
 		    			     data: { //서버로 데이터를 전송할때  키와 벨류로 전달. 
 		    			    	productCd: productCd,
-		    			    	pName: pName,
+		    			    	pname: pname,
 		    			    	stock: stock,
 		    			    	unit: unit,
 		    			    	category: category
@@ -488,7 +553,7 @@
 				
 		const keyword = {
 			productCd : searchBoxx.productCd.value,	
-			pName : searchBoxx.pName.value,	
+			pname : searchBoxx.pname.value,	
 			stock : searchBoxx.stock.value,	
 			category : searchBoxx.category.value,	
 			addDate : searchBoxx.addDate.value,	
@@ -501,7 +566,7 @@
 			sortStock : searchBoxx.sortStock.value,
 			sortUnit : searchBoxx.sortUnit.value,
 			sortCategory : searchBoxx.sortCategory.value,
-			sortAdddate : searchBoxx.sortAdddate.value,
+			sortAddDate : searchBoxx.sortAddDate.value,
 			sortStatedate : searchBoxx.sortStatedate.value,
 			sortDel : searchBoxx.sortDel.value
 			
@@ -542,7 +607,7 @@
 		searchBoxx.sortStock.value=0;
 		searchBoxx.sortUnit.value=0;
 		searchBoxx.sortCategory.value=0;
-		searchBoxx.sortAdddate.value=0;
+		searchBoxx.sortAddDate.value=0;
 		searchBoxx.sortStatedate.value=0;
 		searchBoxx.sortDel.value=0;
 	}
@@ -598,16 +663,16 @@
 		search();
 	});
 	$('#sortAddDate').on('click', function(){
-		if(searchBoxx.sortAdddate.value==0 || searchBoxx.sortAdddate.value == 2){
+		if(searchBoxx.sortAddDate.value==0 || searchBoxx.sortAddDate.value == 2){
 			initSort();
-			searchBoxx.sortAdddate.value = 1;
-		}else if (searchBoxx.sortAdddate.value == 1){
+			searchBoxx.sortAddDate.value = 1;
+		}else if (searchBoxx.sortAddDate.value == 1){
 			initSort();
-			searchBoxx.sortAdddate.value = 2;
+			searchBoxx.sortAddDate.value = 2;
 		}
 		search();
 	});
-	$('#sortStatusDate').on('click', function(){
+	$('#sortStateDate').on('click', function(){
 		if(searchBoxx.sortStatedate.value==0 || searchBoxx.sortStatedate.value == 2){
 			initSort();
 			searchBoxx.sortStatedate.value = 1;
@@ -733,5 +798,5 @@ document.querySelector("#excelBtn").addEventListener("click", excel);
 
 </script>
 
-</body>
+
 </html>

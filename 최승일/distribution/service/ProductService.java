@@ -11,6 +11,8 @@ public interface ProductService {
 
 	List<Product> productList(PagingBean pagingBean, Product product);
 
+	List<Product> list();
+	
 	List<Product> allList();
 
 	int checkRowDelete(String productCd);
@@ -22,6 +24,8 @@ public interface ProductService {
 	String selectCode(String category);
 
 	Product updateselect(Product product);
+	
+	List<Product> activeList();
 
 	int update(Product product);
 
