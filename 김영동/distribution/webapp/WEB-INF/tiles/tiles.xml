@@ -24,6 +24,10 @@
 		<put-attribute name="body" value="/WEB-INF/views/nolay/{1}.jsp" />
 	</definition>
 	
+	<definition name="/*" extends="tilesbase">
+		<put-attribute name="body" value="/WEB-INF/views/{1}.jsp" />
+	</definition>
+	
 	<!-- {1}폴더 안에 {2}에 jsp이름 -->
 	<definition name="*/*" extends="tilesbase">
 		<put-attribute name="body" value="/WEB-INF/views/{1}/{2}.jsp" />

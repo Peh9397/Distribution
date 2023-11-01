@@ -4,11 +4,12 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>Distribution</title>
 </head>
 <body>
 <script type="text/javascript">
-	location.href="main.do";
+	//location.href="main.do";
+	location.href="loginForm.do";
 </script>
 </body>
 </html>
