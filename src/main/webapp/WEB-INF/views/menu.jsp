@@ -71,7 +71,7 @@ function content(data) {
 			</a>
 		</div>
 		<div class="container">
-			<div class="menuNm" onclick="content('/')">
+			<div class="menuNm" onclick="content('productList.do')">
 				<i class="icofont-package icofont-md"></i> 상품 관리
 			</div>
 			<div class="menuNm" onclick="content('pricingList.do')">
@@ -80,7 +80,7 @@ function content(data) {
 			<div class="menuNm" onclick="content('buyer.do')">
 				<i class="icofont-briefcase-1 icofont-md"></i> 구매자 관리
 			</div>
-			<div class="menuNm" onclick="content('order.do')">
+			<div class="menuNm" onclick="content('orderList.do')">
 				<i class="icofont-clip-board icofont-md icofont-md"></i>
 				<i class="icofont-tasks icofont-md"></i> 주문 관리
 			</div>
