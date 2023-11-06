@@ -41,20 +41,20 @@ public class ProductController {
 	
 	@RequestMapping("productList")
 	public String productList(Model model, PagingBean pagingBean, String pageNum, Product product, String page) {
-		int rowPerPage = 20 ; // 한 화면에 보여주는 갯수
+		int rowPerPage = 5 ; // 한 화면에 보여주는 갯수
 		if (page == null || page == "") {
-			rowPerPage = 20;
+			rowPerPage = 5;
 		}else rowPerPage = Integer.parseInt(page);
 		if (pageNum == null || pageNum.equals("")) pageNum = "1";
 		int currentPage = Integer.parseInt(pageNum);
-		product.setDel("N");
+		product.setDel("n");
 		int total = pds.getTotal(pagingBean,product);
 		int startRow = (currentPage - 1) * rowPerPage + 1;
 		int endRow = startRow + rowPerPage - 1;
 		int num = total - startRow + 1;
 		pagingBean.setStartRow(startRow);
 		pagingBean.setEndRow(endRow);
-		product.setSortAdddate(1);
+		product.setSortAddDate(1);
 		product.setSortCategory(0);
 		product.setSortDel(0);
 		product.setSortPname(0);
@@ -73,7 +73,7 @@ public class ProductController {
 		model.addAttribute("rowPerPage",rowPerPage);
 		model.addAttribute("allList",allList);
 		
-		return "nolay/productList";
+		return "/nolay/productList";
 	}
 	@RequestMapping("productDelete")
 	@ResponseBody
@@ -96,13 +96,13 @@ public class ProductController {
 		Product product = new Product();
 		String category = (String) productObj.get("category");
 		String productCd = (String) productObj.get("productCd");
-		String pName = (String) productObj.get("pName");
+		String pname = (String) productObj.get("pname");
 		int stock =Integer.parseInt((String)productObj.get("stock"));
 		String unit = (String) productObj.get("unit");
 		if(category.equals("") ) {
 			result = -2;
 			return result;
-		}else if(pName.equals("") ){
+		}else if(pname.equals("") ){
 			result = -3;
 			return result;
 		}else if(Integer.toString(stock).equals("")) {
@@ -115,7 +115,7 @@ public class ProductController {
 		
 		product.setCategory(category);
 		product.setProductCd(productCd);
-		product.setPName(pName);
+		product.setPname(pname);
 		product.setStock(stock);
 		product.setUnit(unit);
 		
@@ -168,18 +168,17 @@ public class ProductController {
 		}
 	}
 		@RequestMapping("productSearch")
-		public String productSearch(@RequestParam(name="keyword")String keyword, String pageNum, PagingBean pagingBean,String page, Model model ){
+		public String productSearch(@RequestParam(name="keyword",required=false)String keyword, String pageNum, PagingBean pagingBean,String page, Model model ){
 			
 			try {
 				JSONParser p = new JSONParser();
 				Object obj = p.parse(keyword);
 				JSONObject keywordObj = JSONObject.fromObject(obj);
-				
 				Product product = new Product();
 				String productCd = (String) keywordObj.get("productCd");
 				product.setProductCd(productCd);
-				String pname = (String) keywordObj.get("pName");
-				product.setPName(pname);
+				String pname = (String) keywordObj.get("pname");
+				product.setPname(pname);
 				int stock =Integer.parseInt((String) keywordObj.get("stock"));
 				product.setStock(stock);
 				String category = (String) keywordObj.get("category");
@@ -198,20 +197,20 @@ public class ProductController {
 				int sortCategory = Integer.valueOf((String) keywordObj.get("sortCategory"));
 				product.setSortCategory(sortCategory);
 				int sortAddDate = Integer.valueOf((String) keywordObj.get("sortAddDate"));
-				product.setSortAdddate(sortAddDate);
-				int sortStatusDate = Integer.valueOf((String) keywordObj.get("sortStateDate"));
-				product.setSortStatedate(sortStatusDate);
+				product.setSortAddDate(sortAddDate);
+				int sortStatedate = Integer.valueOf((String) keywordObj.get("sortStatedate"));
+				product.setSortStatedate(sortStatedate);
 				int sortDel = Integer.valueOf((String) keywordObj.get("sortDel"));
 				product.setSortDel(sortDel);
-				String adddate = (String) keywordObj.get("adddate");
-				if (adddate != null && !adddate.equals("") ) {
-					Date date = Date.valueOf(adddate);
+				String addDate = (String) keywordObj.get("addDate");
+				if (addDate != null && !addDate.equals("") ) {
+					Date date = Date.valueOf(addDate);
 					product.setAddDate(date);
 				}
 				
-				String adddate2 = (String) keywordObj.get("adddate2");
-				if (adddate2 != null && !adddate2.equals("") ) {
-					Date date = Date.valueOf(adddate2);
+				String addDate2 = (String) keywordObj.get("addDate2");
+				if (addDate2 != null && !addDate2.equals("") ) {
+					Date date = Date.valueOf(addDate2);
 					product.setAddDate2(date);
 				}
 				
@@ -353,7 +352,7 @@ public class ProductController {
 			        
 				    cell = row.createCell(1);
 				    cell.setCellStyle(bodyStyle);
-				    cell.setCellValue(li.getPName());
+				    cell.setCellValue(li.getPname());
 				    
 				    cell = row.createCell(2);
 				    cell.setCellStyle(bodyStyle);
