@@ -6,6 +6,119 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<style type="text/css">
+	/* 팝업 추가창 */
+	.background {
+	  position: fixed;
+	  top: 0;
+	  left: 0;
+	  width: 100%;
+	  height: 100vh;
+	  background-color: rgba(0, 0, 0, 0.3);
+	  z-index: 1000;
+	  
+	  /* 숨기기 */
+	  z-index: -1;
+	  opacity: 0;
+	}
+	
+	.window {
+	  position: relative;
+	  width: 100%;
+	  height: 100%;
+	}
+	
+	.popup {
+	  position: absolute;
+	  top: 50%;
+	  left: 50%;
+	  transform: translate(-50%, -50%);
+	  background-color: #ffffff;
+	  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.3);
+	  
+	  /* 임시 지정 */
+	  width: 600px;
+	  height: 720px;
+	  
+	  /* 초기에 약간 아래에 배치 */
+	  transform: translate(-50%, -40%);
+	}
+	
+	.show {
+	  opacity: 1;
+	  z-index: 1000;
+	  transition: all .5s;
+	}
+	
+	.show .popup {
+	  transform: translate(-50%, -50%);
+	  transition: all .5s;
+	}
+	input:focus {
+		outline: none;
+	}
+	
+	#searchBox {
+		display: flex;
+		border: 1px solid #bfbfbf;
+		padding: 10px;
+	}
+	
+	.search-sub-div {
+		display: inline-flex;
+		justify-content: space-between;
+		flex-direction: row;
+	}
+	
+	.search-item-div {
+		flex-grow: 1;
+		margin-right: 10px;
+	}
+	
+	#searchBtn, #initBtn {
+		width: 85px;
+		height: 45px;
+		background-color: #1b1b1b;
+		color: #ffffff;
+		text-align: center;
+		cursor: pointer;
+		border-radius: 7px;
+		border: none;
+	}
+	
+	input[type="date"], #limit {
+		cursor: pointer;
+	}
+	
+	.btn {
+		width: 50px;
+		height: 25px;
+		background-color: #44444c;
+		color: #ffffff;
+		text-align: center;
+		cursor: pointer;
+		border-radius: 7px;
+		border: none;
+		font-size: 11px;
+	}
+	
+	.table {
+		display: flex;
+		justify-content: center;
+		border: 1px solid #bfbfbf;
+		padding: 10px;
+		height: 50%;
+	}
+	
+	table {
+		width: 85%;
+	}
+	
+	#excelBtn, #excelImg {
+		width: 24px;
+		border: none;
+	}
+</style>
 
 <script type="text/javascript">
 	function dupChk() {
@@ -41,31 +154,61 @@
 	});
 
 </script>
+
 </head>
 <body>
-	<div id="container">
+	<div class="container">
 	<!-- 검색박스 -->
-		<h1 class="menuName"> 고객 관리</h1>
+		<h2 class="menuName"> 구매자 관리</h2>
 		<div id="searchBox">
 			<div class="searchInBox">
 				<form name ="searchBoxx">
 				<input type="hidden" name="sortBuyerCd" value="${buyer.sortBuyerCd }">
 				<input type="hidden" name="sortBname" value="${buyer.sortBname }">
+				<input type="hidden" name="sortCompanyNo" value="${buyer.sortCompanyNo }">
+				<input type="hidden" name="sortCeo" value="${buyer.sortCeo }">
 				<input type="hidden" name="sortManager" value="${buyer.sortManager }">
 				<input type="hidden" name="sortTel" value="${buyer.sortTel }">
 				<input type="hidden" name="sortEmail" value="${buyer.sortEmail }">
 				<input type="hidden" name="sortAddress" value="${buyer.sortAddress }">
 				<input type="hidden" name="sortAdddate" value="${buyer.sortAdddate }">
 				<input type="hidden" name="sortStateDate" value="${buyer.sortStateDate }">
-	
-	
+				
 				<div class="search-sub-div">
 					<div class="search-item-div">
-						<div class="search-item-text">고객코드</div>
-						<input type="search" name="buyerCd" value="${buyer.buyerCd }" list="buyerList">
+						<div class="search-item-text">구매자 코드</div>
+						<input type="search" name="buyerCd" value="${buyer.buyerCd }" list="buyerList" class="enter">
 						<datalist id="buyerList">
 							<c:forEach var="buyer" items="${buyerEx}">
 								<option value="${buyer.buyerCd }">${buyer.bname }</option>
+							</c:forEach>
+						</datalist>
+					</div>
+					<div class="search-item-div">
+						<div class="search-item-text">회사명</div>
+						<input type="search" name="bname" value="${buyer.bname }" list="bnameList">
+						<datalist id="bnameList">
+							<c:forEach var="buyer" items="${buyerEx}">
+								<option value="${buyer.bname }"></option>
+							</c:forEach>
+						</datalist>
+					</div>
+					
+					<div class="search-item-div">
+						<div class="search-item-text">사업자 번호</div>
+						<input type="search" name="companyNo" value="${buyer.companyNo }" list="companyNoList">
+						<datalist id="companyNoList">
+							<c:forEach var="buyer" items="${buyerEx}">
+								<option value="${buyer.companyNo }"></option>
+							</c:forEach>
+						</datalist>
+					</div>
+					<div class="search-item-div">
+						<div class="search-item-text">대표자</div>
+						<input type="search" name="ceo" value="${buyer.ceo }" list="ceoList">
+						<datalist id="ceoList">
+							<c:forEach var="buyer" items="${buyerEx}">
+								<option value="${buyer.ceo }"></option>
 							</c:forEach>
 						</datalist>
 					</div>
@@ -88,9 +231,11 @@
 		<!-- 				</select> -->
 						<input type="search" name="address" class="keyword long2" value="${buyer.address}"> 
 					</div>
+				</div>
+			
 					<div class="search-item-div">	
-						<div class="search-item-text">연락처</div>
-						<input type="search" name="tel" value="${buyer.tel }" list="telList">
+						<div class="search-item-text">전화번호</div>
+						<input type="search" name="tel" placeholder="010-****-****" value="${buyer.tel }" list="telList">
 						<datalist id="telList">
 							<c:forEach var="buyer" items="${buyerEx}">
 								<option value="${buyer.tel }"></option>
@@ -99,7 +244,7 @@
 					</div>
 					<div class="search-item-div">
 						<div class="search-item-text">이메일</div>
-						<input type="search" name="email" value="${buyer.tel }" list="emailList">
+						<input type="search" name="email" value="${buyer.email }" list="emailList">
 						<datalist id="emailList">
 							<c:forEach var="buyer" items="${buyerEx}">
 								<option value="${buyer.email }"></option>
@@ -110,96 +255,99 @@
 						<div class="search-item-text">활성상태</div>
 						<div class="boxx">
 							<select name="del" class="search">
-								<option value="N">활성</option>
-								<option value="Y" <c:if test="${buyer.del == 'Y'}">selected="selected"</c:if> >비활성 </option>
+								<option value="n">활성</option>
+								<option value="y" <c:if test="${buyer.del == 'y'}">selected="selected"</c:if> >비활성 </option>
 								<option value="All" <c:if test="${buyer.del == 'All'}"> selected="selected" </c:if>>모두</option>
 							</select>
 						</div>
 					</div>
-				</div>
-				
 				</form>
-				</div>
+			</div>
 			<div class="search-btn">
 				<button id="searchBtn">검색</button>
-				<button id="initBtn">초기화</button>
+				<button id="initBtn"> 초기화 </button>
 			</div>
 		</div>
-		
 		<div id="button-div">
 			<button id="show" class="btn">등록</button>
-			<c:if test="${buyer.del != 'Y'}">
+			<c:if test="${buyer.del != 'y'}">
 				<button id="delBuyer" class="btn">삭제</button>
 			</c:if>
-			<c:if test="${buyer.del == 'Y'}">
+			<c:if test="${buyer.del == 'y'}">
 				<button type="button" onclick="restoreAction()" class="btn">복원</button>
 			</c:if>
 			<button id="excelBtn"><img alt="" src="/distribution/resources/images/Excel.png" id="excelImg"></button>
 			
 			<div id="page">
-			<form name="itemLimit">
-				<select name="rowPerPage" id="limit">
-					<option value="5" <c:if test="${employee.rowPerPage == 5 }">selected="selected"</c:if> >
-						5개씩 보기
-					</option>
-					<option value="10" <c:if test="${employee.rowPerPage == 10 }">selected="selected"</c:if> >
-						10개씩 보기
-					</option>
-					<option value="20" <c:if test="${employee.rowPerPage == 20 }">selected="selected"</c:if> >
-						20개씩 보기
-					</option>
-					<option value="30" <c:if test="${employee.rowPerPage == 30 }">selected="selected"</c:if> >
-						30개씩 보기
-					</option>
-				</select>
-			</form>
+				<form name="itemLimit">
+					<select name="rowPerPage" id="limit">
+						<option value="10" <c:if test="${buyer.rowPerPage == 10 }">selected="selected"</c:if> >
+							10개씩보기
+						</option>
+						<option value="20" <c:if test="${buyer.rowPerPage == 20 }">selected="selected"</c:if> >
+							20개씩보기
+						</option>
+						<option value="30" <c:if test="${buyer.rowPerPage == 30 }">selected="selected"</c:if> >
+							30개씩보기
+						</option>
+						<option value="40" <c:if test="${buyer.rowPerPage == 40 }">selected="selected"</c:if> >
+							40개씩보기
+						</option>
+						<option value="50" <c:if test="${buyer.rowPerPage == 50 }">selected="selected"</c:if> >
+							50개씩보기
+						</option>
+					</select>
+				</form>
+			</div>
 		</div>
-	</div>
-	
-	<!-- 고객리스트 & 수정가능한 테이블 -->
-		<div class="table" style="height: 600px;">
-		<form action="" name="bt">
+		
+		<!-- 고객리스트 & 수정가능한 테이블 -->
+		<div class="table">
 			<table class="list" >
 				<tr>
 					<th class="fixed">
-						<c:if test="${buyer.del =='Y'}">
+						<c:if test="${buyer.del =='y'}">
 							<input type="checkbox" name="deletedCheckAll" id="th_deletedCheckAll">
 						</c:if>
-						<c:if test="${buyer.del =='N' or buyer.del == 'All' }">
+						<c:if test="${buyer.del =='n' or buyer.del == 'All' }">
 							<input type="checkbox" name="checkAll" id="th_checkAll" class="red-check">
 						</c:if>	
 					</th>
 					<th class="fixed">순번</th>
 					<th class="fixed" id="sortBuyerCd">구매자 코드</th>
 					<th class="fixed" id="sortBname">회사명</th>
+					<th class="fixed" id="sortCompanyNo">사업자 번호</th>
+					<th class="fixed" id="sortCeo">대표자</th>
 					<th class="fixed" id="sortManager">담당자</th>
-					<th class="fixed" id="sortTel">연락처</th>
+					<th class="fixed" id="sortTel">전화번호</th>
 					<th class="fixed" id="sortEmail">이메일</th>
 					<th class="fixed" id="sortAddress">주소</th>
 					<th class="fixed" id="sortAdddate">등록일</th>
-					<th class="fixed" id="sortStateDate">최종변경일</th>
+					<th class="fixed" id="sortStateDate">상태변경일</th>
 				</tr>
 				<c:forEach var="buyerItem" items="${buyerList }">
 					<tr class="itemRow"
-						<c:if test="${emp.del =='Y'}">style="background-color: #44444C;"</c:if>
+						<c:if test="${buyerItem.del =='y'}">style="background-color: #c0c0c052;"</c:if>
 					>
 						<td>
-							<c:if test="${buyerItem.del =='Y' and buyer.del == 'Y'}"> <!-- del값이 Y이면 보여주지않고, N이면 보여준다 -->
+							<c:if test="${buyerItem.del =='y' and buyer.del == 'y'}"> <!-- del값이 Y면 보여주지않고, N이면 보여준다 -->
 								<input type="checkbox" name="deletedRow" value="${buyerItem.buyerCd}">
 							</c:if>
-							<c:if test="${buyerItem.del =='N'}">
+							<c:if test="${buyerItem.del =='n'}">
 								<input type="checkbox" name="checkRow" value="${buyerItem.buyerCd}" class="red-check">
 							</c:if>
 						</td>
 						<td>${buyerItem.rn }</td>
 						<td>${buyerItem.buyerCd }</td>
 						<td class="editable">${buyerItem.bname }</td>
+						<td class="editable">${buyerItem.companyNo }</td>
+						<td class="editable">${buyerItem.ceo }</td>
 						<td class="editable">${buyerItem.manager}</td>
 						<td class="editable">${buyerItem.tel}</td>
 						<td class="editable">${buyerItem.email}</td>
 						<td class="editable">${buyerItem.address}</td>
 						<td>${buyerItem.addDate}</td>
-						<c:if test="${buyerItem.del == 'N'}">
+						<c:if test="${buyerItem.del == 'n'}">
 							<c:if test="${buyerItem.statedate == null}">
 								<td>${buyerItem.statedate }</td>
 							</c:if>	
@@ -207,15 +355,14 @@
 								<td>${buyerItem.statedate } (수정)</td>
 							</c:if>	
 						</c:if>
-						<c:if test="${buyerItem.del == 'Y'}">
+						<c:if test="${buyerItem.del == 'y'}">
 							<td>${buyerItem.statedate } (삭제)</td>
 						</c:if>
 					</tr>
 				</c:forEach>
 			</table>
-		</form>
 		</div>
-		
+	
 		<div id="pageBtn">
 			<form name="paging">
 				<c:if test="${buyer.currentPage != 1}">
@@ -227,17 +374,20 @@
 				</c:if>
 			</form>
 		</div>
+	
 	</div>
+	
+	
 	<!-- 	등록 창 팝업 -->
 	<div class="background">
 		<div class="window">
 			<div class="popup" align="center">
 				<button id="close">X</button>	
 				<form action="" name="frm">
-				<br><h1 class="addSub"> 고객등록 </h1><br>
+				<br><h1 class="addSub"> 구매자 등록 </h1><br>
 				<table> 
 					<tr> 
-						<th>고객 카테고리</th>
+						<th>구매자 카테고리</th>
 						<td>
 							<select name="buyerCategory" id="autoCompleteCd" class="search" autofocus="autofocus">
 								<option value=""></option>
@@ -248,18 +398,31 @@
 							</select>
 						</td>
 					<tr>
-						<th>고객명</th>
-						<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<th>구매자 코드</th>
+						<td><input type="text" disabled="disabled" name="buyerCd"></td>
+<!-- 						<div id="buyerCdChk-msg"></div> -->
+					</tr>
+					<tr>
+						<th>회사명</th>
+						<td>
 							<input type="text" name="bname"><button id="dupChk2">중복체크</button>
 						</td>
 						<div id="buyerCdChk-msg"></div>
+					</tr>
+					<tr>
+						<th>사업자 번호</th>
+						<td><input type="text" name="companyNo"></td>
+					</tr>
+					<tr>
+						<th>대표자</th>
+						<td><input type="text" name="ceo"></td>
 					</tr>
 					<tr>
 						<th>담당자</th>
 						<td><input type="text" name="manager"></td>
 					</tr>
 					<tr>
-						<th>연락처</th>
+						<th>전화번호</th>
 						<td><input type="text" placeholder="010-****-****" name="tel"></td>
 					</tr>
 					<tr>
@@ -270,6 +433,7 @@
 						<th>주소</th>
 						<td><input type="text" name="address"></td>
 					</tr>
+					
 				</table>
 				</form>
 					<button id="addBuyerBtn" class="btn">등록</button>
@@ -277,7 +441,9 @@
 			</div>
 		</div>
 	</div>
+	
 </body>
+
 
 <script type="text/javascript">
 
@@ -293,8 +459,8 @@ function callView(request) {
 	};
 
 	$.ajax(ajaxOption).done(function(data) {
-		$('#content').children().remove();
-		$('#content').html(data);
+		$('#layoutBody').children().remove();
+		$('#layoutBody').html(data);
 	});
 }
 
@@ -306,7 +472,10 @@ document.querySelector("#initBtn").addEventListener("click",  function(){callVie
 		
 		const keyword = {
 			buyerCd : searchBoxx.buyerCd.value,
-			manager : searchBoxx.manager.value,	
+			bname : searchBoxx.bname.value,
+			companyNo : searchBoxx.companyNo.value,
+			ceo : searchBoxx.ceo.value,
+			manager : searchBoxx.manager.value,
 			tel : searchBoxx.tel.value,	
 			email : searchBoxx.email.value,	
 			address : searchBoxx.address.value,
@@ -314,13 +483,17 @@ document.querySelector("#initBtn").addEventListener("click",  function(){callVie
 			
 			sortBuyerCd : searchBoxx.sortBuyerCd.value,
 			sortBname : searchBoxx.sortBname.value,
+			sortCompanyNo : searchBoxx.sortCompanyNo.value,
+			sortCeo : searchBoxx.sortCeo.value,
 			sortManager : searchBoxx.sortManager.value,
 			sortTel : searchBoxx.sortTel.value,
 			sortEmail : searchBoxx.sortEmail.value,
 			sortAddress : searchBoxx.sortAddress.value,
 			sortAdddate : searchBoxx.sortAdddate.value,
 			sortStateDate : searchBoxx.sortStateDate.value,
+			
 			rowPerPage : itemLimit.rowPerPage.value,
+			
 			currentPage : paging.currentPage.value
 		}
 		console.log(keyword);
@@ -333,8 +506,8 @@ document.querySelector("#initBtn").addEventListener("click",  function(){callVie
 		    	keyword: JSON.stringify(keyword)
 		     },
 		     success: function (result) { // 성공시 id 가 content인 곳에 자식내용들을 지우고, 결과값을 html로 보여줘
-		    	 $('#content').children().remove();
-				 $('#content').html(result);
+		    	 $('#layoutBody').children().remove();
+				 $('#layoutBody').html(result);
 			 }
 	   });
 	}
@@ -361,13 +534,15 @@ document.querySelector("#initBtn").addEventListener("click",  function(){callVie
 	function addBuyer() {
 		const buyerCd = frm.buyerCd.value;
 		const bname = frm.bname.value;
+		const companyNo = frm.companyNo.value;
+		const ceo = frm.ceo.value;
 		const manager = frm.manager.value;
 		const tel = frm.tel.value;
 		const email = frm.email.value;
 		const address = frm.address.value;
 		
-		if (buyerCd == '' || bname == '' || manager == '' || tel == '' || 
-				email == '' || address == ''){
+		if (buyerCd == '' || bname == '' || companyNo == '' || ceo == '' || 
+			manager == '' || tel == '' || email == '' || address == ''){
 			
 			alert('값을 채워넣어주세요');
 			
@@ -382,6 +557,16 @@ document.querySelector("#initBtn").addEventListener("click",  function(){callVie
 				$("input[name='bname']").addClass('red');
 			} else {
  			    $("input[name='bname']").removeClass('red');		
+			}
+			if (companyNo == '') {
+				$("input[name='companyNo']").addClass('red');
+			} else {
+ 			    $("input[name='companyNo']").removeClass('red');		
+			}
+			if (ceo == '') {
+				$("input[name='ceo']").addClass('red');
+			} else {
+ 			    $("input[name='ceo']").removeClass('red');		
 			}
 			if (manager == '') {
 				$("input[name='manager']").addClass('red');
@@ -411,16 +596,18 @@ document.querySelector("#initBtn").addEventListener("click",  function(){callVie
 			     data: { //서버로 데이터를 전송할때  키와 벨류로 전달. BuyerController로 buyer객체에 담겨서 보내짐
 			    	buyerCd: frm.buyerCd.value,
 					bname: frm.bname.value,
+					companyNo: frm.companyNo.value,
+					ceo: frm.ceo.value,
 					manager: frm.manager.value,
 					tel: frm.tel.value,
 					email: frm.email.value,
 					address: frm.address.value,
 			     },
 			     success: function (result) { //성공했을떄 호출할 콜백을 지정
-			        if (result) {
-			        	callView('buyer.do')
-						alert("신규고객 등록완료");
-			        } else {
+			        if (result) {			        
+						alert("신규 구매자 등록완료");
+						callView('buyer.do')
+				        } else {
 			        	alert("등록실패");
 			        }
 				}
@@ -562,10 +749,12 @@ document.querySelector("#initBtn").addEventListener("click",  function(){callVie
     		             // td.eq(index)를 통해 값을 가져올 수도 있다.
     		             buyerCd = tdd.eq(2).text();
     		             bname = tdd.eq(3).text();
-    		             manager = tdd.eq(4).text();
-    		             tel = tdd.eq(5).text();
-    		             email = tdd.eq(6).text();
-    		             address = tdd.eq(7).text();
+    		             companyNo = tdd.eq(4).text();
+    		             ceo = tdd.eq(5).text();
+    		             manager = tdd.eq(6).text();
+    		             tel = tdd.eq(7).text();
+    		             email = tdd.eq(8).text();
+    		             address = tdd.eq(9).text();
     		             
     		             console.log(buyerCd);
     	             
@@ -576,6 +765,8 @@ document.querySelector("#initBtn").addEventListener("click",  function(){callVie
 		    			     data: { //서버로 데이터를 전송할때  키와 벨류로 전달. BuyerController로 buyer객체에 담겨서 보내짐
 		    			    	buyerCd: buyerCd,
 		    					bname: bname,
+		    					companyNo: companyNo,
+		    					ceo: ceo,
 		    					manager: manager,
 		    					tel: tel,
 		    					email: email,
@@ -604,7 +795,6 @@ document.querySelector("#initBtn").addEventListener("click",  function(){callVie
             td.addClass("editable")
             });
    });
-	
 </script>
 
 <!-- 스모셀렉트 -->
@@ -618,11 +808,18 @@ $(document).ready(function() {
 	
 	$('select.bname')[0].sumo.selectItem("${buyer.bname }");
 	
+	$('select.companyNo')[0].sumo.selectItem("${buyer.companyNo }");
+	
+	$('select.ceo')[0].sumo.selectItem("${buyer.ceo }");
+	
 	$('select.manager')[0].sumo.selectItem("${buyer.manager }");
+	
+	$('select.address')[0].sumo.selectItem("${buyer.address }");
 	
 	$('select.tel')[0].sumo.selectItem("${buyer.tel }");
 
 	$('select.email')[0].sumo.selectItem("${buyer.email }");
+
 	
 });
 </script>
@@ -632,6 +829,8 @@ $(document).ready(function() {
 	$('#reset').on('click', function() {
 		frm.buyerCd.value = '';
 		frm.bname.value = '';
+		frm.companyNo.value = '';
+		frm.ceo.value = '';
 		frm.manager.value = '';
 		frm.tel.value = '';
 		frm.email.value = '';
@@ -639,6 +838,7 @@ $(document).ready(function() {
 		
 	});
 </script>
+
 <!-- 페이지 버튼 / 페이지 당 요소 갯수 -->
 <script type="text/javascript">
 	$('#prev').on('click', function() {
@@ -684,6 +884,8 @@ $(document).ready(function() {
 	function initSort() {
 		searchBoxx.sortBuyerCd.value = 0;
 		searchBoxx.sortBname.value = 0;
+		searchBoxx.sortCompanyNo.value = 0;
+		searchBoxx.sortCeo.value = 0;
 		searchBoxx.sortManager.value = 0;
 		searchBoxx.sortTel.value = 0;
 		searchBoxx.sortEmail.value = 0;
@@ -709,6 +911,26 @@ $(document).ready(function() {
 		} else if (searchBoxx.sortBname.value == 1) {
 			initSort();
 			searchBoxx.sortBname.value = 2;
+		}		
+		search();
+	});
+	$('#sortCompanyNo').on('click', function() {
+		if (searchBoxx.sortCompanyNo.value == 0 || searchBoxx.sortCompanyNo.value == 2) {
+			initSort();
+			searchBoxx.sortCompanyNo.value = 1;			
+		} else if (searchBoxx.sortCompanyNo.value == 1) {
+			initSort();
+			searchBoxx.sortCompanyNo.value = 2;
+		}		
+		search();
+	});
+	$('#sortCeo').on('click', function() {
+		if (searchBoxx.sortCeo.value == 0 || searchBoxx.sortCeo.value == 2) {
+			initSort();
+			searchBoxx.sortCeo.value = 1;			
+		} else if (searchBoxx.sortCeo.value == 1) {
+			initSort();
+			searchBoxx.sortCeo.value = 2;
 		}		
 		search();
 	});
@@ -775,7 +997,7 @@ $(document).ready(function() {
 </script>
 
 <!-- 전체 선택 / 삭제  -->
-<c:if test="${buyer.del =='N' or buyer.del == 'All' }">
+<c:if test="${buyer.del =='n' or buyer.del == 'All' }">
 	<script type="text/javascript">
 		function checkAll(){
 		    if( $("#th_checkAll").is(':checked') ){
@@ -787,8 +1009,8 @@ $(document).ready(function() {
 		
 		document.querySelector("#th_checkAll").addEventListener("click", checkAll);
 	</script>
-	</c:if>
-	<script type="text/javascript">
+</c:if>
+<script type="text/javascript">
 	
 function delBuyer() {
 	var cdArr = new Array(); //del 체크가 여러개일수도 있기에 배열로 받음
@@ -798,7 +1020,7 @@ function delBuyer() {
 	console.log(cdArr);
 	
 	if(cdArr=='') {
-		alert("삭제할 고객을 선택하세요");
+		alert("삭제할 구매자를 선택하세요");
 		return false;
 	}
 	
@@ -830,7 +1052,7 @@ document.querySelector("#delBuyer").addEventListener("click", delBuyer);
 </script>
 
 <!-- 삭제 항목 복원  -->
-<c:if test="${buyer.del =='Y'}">
+<c:if test="${buyer.del =='y'}">
 	<script type="text/javascript">
 		function delCheckAll(){
 		    if( $("#th_deletedCheckAll").is(':checked') ){
@@ -873,4 +1095,6 @@ function restoreAction(){
 	  });
 };
 </script>
+
 </html>
+

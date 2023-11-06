@@ -1,49 +1,77 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="buyerns">
 
 	<select id="list" resultType="buyer">
-		select * from BUYER order by adddate desc
+		select	* 
+		from 	BUYER 
+		order 	by addDate desc
 	</select>
-	
 	<insert id="insert" parameterType="buyer">
-		insert into BUYER values (#{buyerCd}, #{bname}, #{companyNo}, #{ceo}, #{address}, #{manager}, #{tel},
-		#{email}, sysdate, 'n', #{remark}, null)
+		insert 	into BUYER
+		values (#{buyerCd},
+				#{bname},
+				#{companyNo, jdbcType=VARCHAR},
+				#{ceo, jdbcType=VARCHAR},
+				#{address},
+				#{manager},
+				#{tel},
+				#{email},
+				sysdate,
+				'n',
+				#{remark, jdbcType=VARCHAR},
+				null
+				)
 	</insert>
-	
 	<update id="delete" parameterType="String">
-		update BUYER set del='y', statedate = sysdate where BUYERCD=#{buyerCd}
+		update 	BUYER 
+		set 	del='y', 
+				statedate = sysdate 
+		where 	buyerCd=#{buyerCd}	
 	</update>
-	
-	<update id="update" parameterType="buyer">
-		update BUYER set BNAME = #{bname}, MANAGER = #{manager}, TEL = #{tel}, EMAIL = #{email},
-				ADDRESS = #{address}, DEL ='N', STATEDATE = sysdate
+	<update id="update" parameterType="buyer" > <!-- 테이블에서 바로 수정가능하게 기능 -->
+		update 	BUYER 
+		set 	bname = #{bname},
+				manager = #{manager},
+				tel = #{tel},
+				email = #{email},
+				address = #{address},
+				del ='n', 
+				statedate = sysdate
 		where  BUYERCD=#{buyerCd}
 	</update>
-	
 	<select id="search" parameterType="buyer" resultType="buyer">
 		select	*
-		from	(select a.*, rowNum rn from	(select * from BUYER
-							<where>
+		from	(select a.*,
+						rowNum rn
+				from	(select 	* 
+						from 	BUYER
+						<where>
 							<if test="buyerCd != null and buyerCd != ''">
 								(BUYERCD like '%' || #{buyerCd} || '%'
-								or BNAME like '%' || #{buyerCd} || '%')
+								or bname like '%' || #{buyerCd} || '%')
 							</if>
-							<if test="manager != null and manager != 'null'">
-								and MANAGER like '%' || #{manager} || '%'
+							<if test="companyNo != null and companyNo != ''">
+								and companyNo like '%' || #{companyNo} || '%'
 							</if>
-							<if test="tel != null and tel != 'null'">
-								and TEL like '%' || #{tel} || '%'
+							<if test="ceo != null and ceo != ''">
+								and ceo like '%' || #{ceo} || '%'
 							</if>
-							<if test="email != null and email != 'null'">
-								and EMAIL like '%' || #{email} || '%'
+							<if test="manager != null and manager != ''">
+								and manager like '%' || #{manager} || '%'
 							</if>
-							<if test="address != null and address != 'null'">
-								and ADDRESS like '%' || #{address} || '%'
+							<if test="tel != null and tel != ''">
+								and tel like '%' || #{tel} || '%'
 							</if>
-							<if test="del != 'All'">
-								and DEL = #{del}
+							<if test="email != null and email != ''">
+								and email like '%' || #{email} || '%'
+							</if>
+							<if test="address != null and address != ''">
+								and address like '%' || #{address} || '%'
+							</if>
+							<if test="del != ''">
+								and del = #{del}
 							</if>
 						</where>
 						order by
@@ -54,104 +82,130 @@
 								BUYERCD asc
 							</if>		
 							<if test="sortBname == 1">
-								BNAME desc
+								bname desc
 							</if>
 							<if test="sortBname == 2">
-								BNAME asc
+								bname asc
+							</if>
+							<if test="sortCompanyNo == 1">
+								companyNo desc
+							</if>
+							<if test="sortCompanyNo == 2">
+								companyNo asc
+							</if>
+							<if test="sortCeo == 1">
+								ceo desc
+							</if>
+							<if test="sortCeo == 2">
+								ceo asc
 							</if>		
 							<if test="sortManager == 1">
-								MANAGER desc
+								manager desc
 							</if>
 							<if test="sortManager == 2">
-								MANAGER asc
+								manager asc
 							</if>		
 							<if test="sortTel == 1">
-								TEL desc
+								tel desc
 							</if>
 							<if test="sortTel == 2">
-								TEL asc
+								tel asc
 							</if>		
 							<if test="sortEmail == 1">
-								EMAIL desc
+								email desc
 							</if>
 							<if test="sortEmail == 2">
-								EMAIL asc
+								email asc
 							</if>		
 							<if test="sortAddress == 1">
-								ADDRESS desc
+								address desc
 							</if>
 							<if test="sortAddress == 2">
-								ADDRESS asc
-							</if>
+								address asc
+							</if>	
 							<if test="sortAdddate == 1">
-								ADDDATE desc
+								addDate desc
 							</if>
 							<if test="sortAdddate == 2">
-								ADDDATE asc
+								addDate asc
 							</if>		
 							<if test="sortStateDate == 1">
-								STATEDATE desc
+								statedate desc
 							</if>
 							<if test="sortStateDate == 2">
-								STATEDATE asc
+								statedate asc
 							</if>
 						) a
 				)
-		where	rn between #{startRow} and #{endRow}
+		where	rn between #{startRow} and #{endRow}		
 	</select>
 	
 	<select id="ndlist" resultType="buyer">
 		select  * 
 		from  BUYER 
-		where  DEL='N' 
-		order by ADDDATE desc
+		where  del='n' 
+		order by addDate desc
 	</select>
 	
 	<select id="getTotal" parameterType="buyer" resultType="integer">
-		select count(*) from BUYER
+		select 	count(*) 
+		from 	BUYER
 		<where>
-			<if test="buyerCd !=null and buyerCd != ''">
-				BUYERCD like '%' || #{buyerCd} || '%'
+			<if test="buyerCd != null and buyerCd != ''">
+				buyerCd like '%' || #{buyerCd} || '%'
 			</if>
-			<if test="bname !=null and bname != ''">
-				BNAME like '%' || #{bname} || '%'
+			<if test="bname != null and bname != ''">
+				and bname like '%' || #{bname} || '%'
 			</if>
 			<if test="manager != null and manager != 'null'">
-				and MANAGER like '%' || #{manager} || '%'
+				and manager like '%' || #{manager} || '%'
 			</if>
 			<if test="tel != null and tel != 'null'">
-				and TEL like '%' || #{tel} || '%'
+				and tel like '%' || #{tel} || '%'
 			</if>
 			<if test="email != null and email != 'null'">
-				and EMAIL like '%' || #{email} || '%'
+				and email like '%' || #{email} || '%'
 			</if>
 			<if test="address != null and address != 'null'">
-				and ADDRESS like '%' || #{address} || '%'
+				and address like '%' || #{address} || '%'
 			</if>
 			<if test="del != 'All'">
-				and DEL = #{del}
+				and del = #{del}
 			</if>
 		</where>
 	</select>
-	
+
+
 	<select id="dlist" resultType="buyer">
-		select * from BUYER where del='Y' order by adddate desc
+		select	* 
+		from 	BUYER 
+		where del='y'
+		order by addDate desc 
 	</select>
-	
 	<select id="select" parameterType="String" resultType="buyer">
-		select * from BUYER where BUYERCD = #{buyerCd}
+		select 	* 
+		from 	BUYER 
+		where 	BUYERCD = #{buyerCd}
 	</select>
-	
 	<update id="buyerRestore" parameterType="String">
-		update BUYER set del= 'N', STATEDATE = sysdate where BUYERCD = #{buyerCd}
+		update	BUYER
+		set		del = 'n',
+				statedate = sysdate
+		where	BUYERCD = #{buyerCd}
 	</update>
-	
 	<select id="listForExcel" parameterType="buyer" resultType="buyer">
-		select * from BUYER where BUYERCD =#{buyerCd}
+		select	*
+		from	BUYER
+		where	BUYERCD = #{buyerCd}
+	</select>
+	<!-- LPAD(들어갈 값, 총자릿수(3자리), 나머지는 0으로 채운다) -->
+<!-- 	BUYERCD에 autoCompleteCd 값을 포함하고 있으면(앞뒤로 어떤값이 들어가도 조회되게) -->
+	<select id="selectCode" parameterType="String" resultType="String"> 
+		select 	LPAD(count(*)+1,3,0) 
+		from 	BUYER 
+		where 	BUYERCD 
+		like 	'%' || #{autoCompleteCd} || '%'
 	</select>
 	
-	<select id="selectCode" parameterType="String" resultType="String">
-		select LPAD(count(*)+1, 3, 0) from BUYER where BUYERCD like '%' || #{autoCompleteCd} || '%'
-	</select>
 	
 </mapper>

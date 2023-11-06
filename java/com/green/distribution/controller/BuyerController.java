@@ -44,8 +44,7 @@ public class BuyerController {
 	
 	@RequestMapping("buyer")
 	public String buyer(Model model, Buyer buyer) {
-		
-		int rowPerPage = 20 ;
+		int rowPerPage = 10 ;
 		
 		if (buyer.getRowPerPage() != 0) {
 			rowPerPage = buyer.getRowPerPage();
@@ -54,7 +53,7 @@ public class BuyerController {
 			buyer.setPageNum("1");
 		}
 		
-		buyer.setDel("N");
+		buyer.setDel("n");
 		
 		int currentPage = Integer.parseInt(buyer.getPageNum());
 		int total = bs.getTotal(buyer);
@@ -66,17 +65,19 @@ public class BuyerController {
 		buyer.setEndRow(endRow);
 		
 		buyer.setSortBuyerCd(0);
+		buyer.setSortRemark(0);
 		buyer.setSortBname(0);
+		buyer.setSortCompanyNo(0);
+		buyer.setSortCeo(0);
 		buyer.setSortManager(0);
 		buyer.setSortTel(0);
 		buyer.setSortEmail(0);
 		buyer.setSortAddress(0);
 		buyer.setSortAdddate(1);
-		buyer.setSortStateDate(0);		
-		
+		buyer.setSortStateDate(0);	
 		List<Buyer> buyerList = bs.search(buyer);
 		model.addAttribute("buyerList", buyerList);
-		
+		System.out.println("size = "+buyerList.size());
 		exData(model);
 		
 		return "nolay/buyer"; // head가 중복으로 나오는 것 방지
@@ -89,9 +90,9 @@ public class BuyerController {
 		String msg = "";
 		Buyer buyer = bs.select(bname);
 		if(buyer == null) {
-			msg = "※ 사용 가능한 고객명";
+			msg = "※ 사용 가능한 회사명";
 		}else {
-			msg = "※ 이미 사용중인 고객명";
+			msg = "※ 이미 사용중인 회사명";
 		}
 		return msg;
 	}
@@ -101,7 +102,6 @@ public class BuyerController {
 	@ResponseBody
 	public boolean buyerInsert(Buyer buyer) {
 		System.out.println(buyer.getBuyerCd());
-		
 		int result = bs.insert(buyer);		
 		System.out.println(result);
 		
@@ -171,24 +171,25 @@ public class BuyerController {
 			JSONObject keywordObj = JSONObject.fromObject(obj);
 			
 			Buyer buyer = new Buyer();
-			String buyerCd = (String) keywordObj.get("buyerCd"); //고객코드
+			String buyerCd = (String) keywordObj.get("buyerCd"); //구매자코드
 			buyer.setBuyerCd(buyerCd);
-			
 			String manager = (String) keywordObj.get("manager"); //담당자
 			buyer.setManager(manager);
-			
-			String tel = (String) keywordObj.get("tel"); //전화번호
-			buyer.setTel(tel);
-			String email = (String) keywordObj.get("email"); //이메일
-			buyer.setEmail(email);
-			String address = (String) keywordObj.get("address"); //주소
-			buyer.setAddress(address);
-			
 			String del = (String) keywordObj.get("del");
 			buyer.setDel(del);
-			
+			String tel = (String) keywordObj.get("tel"); //전화번호
+			buyer.setTel(tel);
+			String address = (String) keywordObj.get("address"); //주소
+			buyer.setAddress(address);
+			String email = (String) keywordObj.get("email"); //이메일
+			buyer.setEmail(email);
+			 
 			int sortBuyerCd = Integer.valueOf((String) keywordObj.get("sortBuyerCd"));
 			buyer.setSortBuyerCd(sortBuyerCd);
+			int sortCompanyNo = Integer.valueOf((String) keywordObj.get("sortCompanyNo"));
+			buyer.setSortCompanyNo(sortCompanyNo);
+			int sortCeo = Integer.valueOf((String) keywordObj.get("sortCeo"));
+			buyer.setSortCeo(sortCeo);
 			int sortBname = Integer.valueOf((String) keywordObj.get("sortBname"));
 			buyer.setSortBname(sortBname);
 			int sortManager = Integer.valueOf((String) keywordObj.get("sortManager"));
@@ -265,7 +266,7 @@ public class BuyerController {
 			Object obj = p.parse(items);
 			JSONArray arr = JSONArray.fromObject(obj);
 
-			System.out.println("1");
+			System.out.println("excel");
 
 			Buyer item = new Buyer();
 
@@ -291,7 +292,7 @@ public class BuyerController {
 
 		// 워크북 생성
 		Workbook wb = new XSSFWorkbook();
-		Sheet sheet = wb.createSheet("고객");
+		Sheet sheet = wb.createSheet("구매자");
 		Row row = null;
 		Cell cell = null;
 		int rowNo = 0;
@@ -324,33 +325,41 @@ public class BuyerController {
 
 		cell = row.createCell(0);
 		cell.setCellStyle(headStyle);
-		cell.setCellValue("고객코드");
+		cell.setCellValue("구매자코드");
 
 		cell = row.createCell(1);
 		cell.setCellStyle(headStyle);
-		cell.setCellValue("고객명");
+		cell.setCellValue("회사명");
 		
 		cell = row.createCell(2);
 		cell.setCellStyle(headStyle);
-		cell.setCellValue("담당자");
-
+		cell.setCellValue("사업자 번호");
+		
 		cell = row.createCell(3);
 		cell.setCellStyle(headStyle);
-		cell.setCellValue("전화번호");
-
+		cell.setCellValue("대표자");
+		
 		cell = row.createCell(4);
 		cell.setCellStyle(headStyle);
-		cell.setCellValue("이메일");
+		cell.setCellValue("담당자");
 
 		cell = row.createCell(5);
 		cell.setCellStyle(headStyle);
-		cell.setCellValue("주소");
+		cell.setCellValue("전화번호");
 
 		cell = row.createCell(6);
 		cell.setCellStyle(headStyle);
-		cell.setCellValue("등록일");
+		cell.setCellValue("이메일");
 
 		cell = row.createCell(7);
+		cell.setCellStyle(headStyle);
+		cell.setCellValue("주소");
+
+		cell = row.createCell(8);
+		cell.setCellStyle(headStyle);
+		cell.setCellValue("등록일");
+
+		cell = row.createCell(9);
 		cell.setCellStyle(headStyle);
 		cell.setCellValue("최종수정일");
 
@@ -372,30 +381,40 @@ public class BuyerController {
 			
 			cell = row.createCell(2);
 			cell.setCellStyle(bodyStyle);
+			cell.setCellValue(bl.getCompanyNo());
+			System.out.println(bl.getCompanyNo());
+			
+			cell = row.createCell(3);
+			cell.setCellStyle(bodyStyle);
+			cell.setCellValue(bl.getCeo());
+			System.out.println(bl.getCeo());
+			
+			cell = row.createCell(4);
+			cell.setCellStyle(bodyStyle);
 			cell.setCellValue(bl.getManager());
 			System.out.println(bl.getManager());
 
-			cell = row.createCell(3);
+			cell = row.createCell(5);
 			cell.setCellStyle(bodyStyle);
 			cell.setCellValue(bl.getTel());
 			System.out.println(bl.getTel());
 
-			cell = row.createCell(4);
+			cell = row.createCell(6);
 			cell.setCellStyle(bodyStyle);
 			cell.setCellValue(bl.getEmail());
 			System.out.println(bl.getEmail());
 
-			cell = row.createCell(5);
+			cell = row.createCell(7);
 			cell.setCellStyle(bodyStyle);
 			cell.setCellValue(bl.getAddress());
 			System.out.println(bl.getAddress());
 
-			cell = row.createCell(6);
+			cell = row.createCell(8);
 			cell.setCellStyle(bodyStyle);
 			cell.setCellValue(bl.getAddDate().toString());
 			System.out.println(bl.getAddDate().toString());
 
-			cell = row.createCell(7);
+			cell = row.createCell(9);
 			cell.setCellStyle(bodyStyle);
 			if (bl.getStatedate() != null) {
 				cell.setCellValue(bl.getStatedate().toString());

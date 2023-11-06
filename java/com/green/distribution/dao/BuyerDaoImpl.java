@@ -24,6 +24,12 @@ public class BuyerDaoImpl implements BuyerDao {
 
 	@Override
 	public List<Buyer> search(Buyer buyer) {
+		System.out.println("buyerCd="+buyer.getBuyerCd());
+		System.out.println("manager="+buyer.getManager());
+		System.out.println("tel="+buyer.getTel());
+		System.out.println("del="+buyer.getDel());
+		System.out.println("email="+buyer.getEmail());
+		System.out.println("address="+buyer.getAddress());
 		return sst.selectList("buyerns.search", buyer);
 	}
 

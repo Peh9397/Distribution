@@ -24,15 +24,19 @@ public class Buyer {
 	private Date   statedate;		// 최종변경일
 
 	private int rn;
-
+	
     private int sortBuyerCd;	 	// 구매자 코드
     private int sortBname;			// 회사명
-    private int sortManager;		// 담당자
-    private int sortTel;			// 연락처
-    private int sortEmail;			// 이메일
+    private int sortCompanyNo;		// 사업자 번호
+    private int sortCeo;			// 대표자
     private int sortAddress;		// 주소
+    private int sortManager;		// 담당자
+    private int sortEmail;			// 이메일
     private int sortAdddate;		// 등록일
+    private int sortTel;			// 연락처
     private int sortStateDate;		// 최종변경일
+    private int sortRemark;
+    
     
     private int currentPage;
 	private int rowPerPage;
