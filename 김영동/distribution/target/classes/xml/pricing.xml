@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pricingns">
+
+
+	<select id="pricingList" parameterType="pricing"
+		resultType="pricing">
+		<!-- select * -->
+		<!-- from (select a.*, -->
+		<!-- rowNum rn -->
+		<!-- from (select p.*, b.bname, d.pname -->
+		<!-- from m_pricing p, m_buyer b, m_product d -->
+		<!-- where p.buyer_cd = b.buyer_cd -->
+		<!-- and p.product_cd = d.product_cd -->
+		<!-- and p.del='N' -->
+		<!-- order by p.adddate desc)a -->
+		<!-- ) -->
+		<!-- where rn between #{startRow} and #{endRow} -->
+		select * from (select a.*,
+		rowNum rn
+		from (select distinct p.*, b.bname, d.pname,
+		(p.price * (1 - (p.discount/100))) final
+		from pricing p, buyer b, product d
+		<where>
+			p.buyerCd = b.buyerCd
+			and p.productCd = d.productCd
+			<if test="buyerCd != null and buyerCd != 'All'">
+				and (p.buyerCd like '%' || #{buyerCd} || '%'
+				or b.bname
+				like '%' || #{buyerCd} || '%')
+			</if>
+			<if test="productCd != null and productCd != 'All'">
+				and (p.productCd like '%' || #{productCd} || '%'
+				or
+				d.pname like '%' || #{productCd} || '%')
+			</if>
+			<if test="startPrice != 0 and endPrice != 0">
+				and price between #{startPrice} and #{endPrice}
+			</if>
+			<if test="discount != null and discount != ''">
+				and discount = #{discount}
+			</if>
+			<if test="del != 'All'">
+				and p.del = #{del}
+			</if>
+		</where>
+		<if test="sortBuyerCd != '' and sortBuyerCd != null and
+				sortBname != '' and sortBname != null and
+				sortProductCd != '' and sortProductCd != null and
+				sortPname != '' and sortPname != null and
+				sortPrice != '' and sortPrice != null and
+				sortStartDate != '' and sortStartDate != null and
+				sortEndDate != '' and sortEndDate != null and
+				sortDiscount != '' and sortDiscount != null and
+				sortFinalPrice != '' and sortFinalPrice != null and
+				sortAddDate != '' and sortAddDate != null and
+				sortStateDate != '' and sortStateDate != null">
+			order by
+			<if test="sortBuyerCd == 1">
+				p.buyercd desc
+			</if>
+			<if test="sortBuyerCd == 2">
+				p.buyercd asc
+			</if>
+	
+			<if test="sortBname == 1">
+				b.bname desc
+			</if>
+			<if test="sortBname == 2">
+				b.bname asc
+			</if>
+	
+			<if test="sortProductCd == 1">
+				p.productcd desc
+			</if>
+			<if test="sortProductCd == 2">
+				p.productcd asc
+			</if>
+	
+			<if test="sortPname == 1">
+				d.pname desc
+			</if>
+			<if test="sortPname == 2">
+				d.pname asc
+			</if>
+	
+			<if test="sortPrice == 1">
+				price desc
+			</if>
+			<if test="sortPrice == 2">
+				price asc
+			</if>
+	
+			<if test="sortStartDate == 1">
+				startdate desc
+			</if>
+			<if test="sortStartDate == 2">
+				startdate asc
+			</if>
+	
+			<if test="sortEndDate == 1">
+				enddate desc
+			</if>
+			<if test="sortEndDate == 2">
+				enddate asc
+			</if>
+	
+			<if test="sortDiscount == 1">
+				discount desc
+			</if>
+			<if test="sortDiscount == 2">
+				discount asc
+			</if>
+	
+			<if test="sortFinalPrice == 1">
+				final desc
+			</if>
+			<if test="sortFinalPrice == 2">
+				final asc
+			</if>
+	
+			<if test="sortAddDate == 1">
+				p.adddate desc
+			</if>
+			<if test="sortAddDate == 2">
+				p.adddate asc
+			</if>
+	
+			<if test="sortStateDate == 1">
+				p.statedate desc
+			</if>
+			<if test="sortStateDate == 2">
+				p.statedate asc
+			</if>
+		</if>
+		)a
+		)
+		where rn between #{startRow} and #{endRow}
+	</select>
+
+
+
+	<insert id="pricingInsert" parameterType="pricing">
+		insert into pricing values
+		(#{buyerCd}, #{productCd}, #{startDate}, #{endDate},
+		#{price}, #{discount}, sysdate, 'n', null)
+	</insert>
+
+	<select id="pricingDetail" parameterType="String" resultType="pricing">
+		select p.*,b.bname,d.pname from pricing p, buyer b, product d where p.buyerCd=b.buyerCd and p.productCd=d.productCd and buyerCd = #{buyerCd} and productCd = #{productCd} and startDate = #{startDate}
+	</select>
+
+
+	<select id="getTotal" resultType="Integer">
+		select count(*) from pricing
+		<where>
+			<if test="buyerCd != null and buyerCd != 'All'">
+				and buyerCd like '%' || #{buyerCd} || '%'
+			</if>
+			<if test="productCd != null and productCd != 'All'">
+				and productCd like '%' || #{productCd} || '%'
+			</if>
+			<if test="startPrice != 0 and endPrice != 0">
+				and price between #{startPrice} and #{endPrice}
+			</if>
+			<if test="discount != null and discount != ''">
+				and discount = #{discount}
+			</if>
+			<if test="del != 'All'">
+				and del = #{del}
+			</if>
+		</where>
+	</select>
+
+
+
+	<update id="pricingDelete" parameterType="pricing">
+		update pricing set del='y',
+		stateDate = sysdate
+		where buyerCd = #{buyerCd} and productCd = #{productCd} and startDate =
+		#{startDate} and endDate = #{endDate}
+	</update>
+
+	<update id="pricingUpdate" parameterType="pricing">
+		update pricing
+		set price =
+		#{price},
+		discount = #{discount},
+		stateDate = sysdate
+		where buyerCd = #{buyerCd}
+		and productCd = #{productCd}
+		and
+		startDate = #{startDate}
+		and endDate = #{endDate}
+	</update>
+
+
+
+	<select id="getPrice" parameterType="pricing"
+		resultType="integer">
+		select price
+		from pricing
+		where buyerCd = #{buyerCd}
+		and productCd = #{productCd}
+		between startDate and endDate
+	</select>
+
+	<select id="getProductList" parameterType="pricing"
+		resultType="product">
+		select d.productCd,
+		pName
+		from product d,
+		pricing p
+		where d.productCd = p.productCd
+		and p.buyerCd = #{buyerCd}
+		between startDate and endDate
+	</select>
+
+	<select id="search" parameterType="pricing" resultType="pricing">
+		select *
+		from (select a.*,
+		rowNum rn
+		from (select distinct p.*, b.bname, d.pname,
+		(p.price * (1 - (p.discount/100))) final
+		from pricing p, buyer b, product d
+		<where>
+			p.buyerCd = b.buyerCd
+			and p.productCd = d.productCd
+			<if test="buyerCd != null and buyerCd != 'All'">
+				and (p.buyerCd like '%' || #{buyerCd} || '%'
+				or b.bname
+				like '%' || #{buyerCd} || '%')
+			</if>
+			<if test="productCd != null and productCd != 'All'">
+				and (p.productCd like '%' || #{productCd} || '%'
+				or
+				d.pname like '%' || #{productCd} || '%')
+			</if>
+			<if test="startPrice != 0 and endPrice != 0">
+				and price between #{startPrice} and #{endPrice}
+			</if>
+			<if test="discount != null and discount != ''">
+				and discount = #{discount}
+			</if>
+			<if test="del != 'All'">
+				and p.del = #{del}
+			</if>
+		</where>
+		order by
+		<if test="sortBuyerCd == 1">
+			p.buyerCd desc
+		</if>
+		<if test="sortBuyerCd == 2">
+			p.buyerCd asc
+		</if>
+
+		<if test="sortBname == 1">
+			b.bname desc
+		</if>
+		<if test="sortBname == 2">
+			b.bname asc
+		</if>
+
+		<if test="sortProductCd == 1">
+			p.productCd desc
+		</if>
+		<if test="sortProductCd == 2">
+			p.productCd asc
+		</if>
+
+		<if test="sortPname == 1">
+			d.pname desc
+		</if>
+		<if test="sortPname == 2">
+			d.pname asc
+		</if>
+
+		<if test="sortPrice == 1">
+			price desc
+		</if>
+		<if test="sortPrice == 2">
+			price asc
+		</if>
+
+		<if test="sortStartDate == 1">
+			startDate desc
+		</if>
+		<if test="sortStartDate == 2">
+			startDate asc
+		</if>
+
+		<if test="sortEndDate == 1">
+			endDate desc
+		</if>
+		<if test="sortEndDate == 2">
+			endDate asc
+		</if>
+
+		<if test="sortDiscount == 1">
+			discount desc
+		</if>
+		<if test="sortDiscount == 2">
+			discount asc
+		</if>
+
+		<if test="sortFinalPrice == 1">
+			final desc
+		</if>
+		<if test="sortFinalPrice == 2">
+			final asc
+		</if>
+
+		<if test="sortAddDate == 1">
+			p.addDate desc
+		</if>
+		<if test="sortAddDate == 2">
+			p.addDate asc
+		</if>
+
+		<if test="sortStateDate == 1">
+			p.stateDate desc
+		</if>
+		<if test="sortStateDate == 2">
+			p.stateDate asc
+		</if>
+		)a
+		)
+		where rn between #{startRow} and #{endRow}
+	</select>
+
+	<select id="listForExcel" parameterType="pricing"
+		resultType="pricing">
+		select p.*, b.bname, d.pname
+		from pricing p, buyer b,
+		product d
+		where p.buyerCd = b.buyerCd
+		and p.productCd = d.productCd
+		and p.buyerCd = #{buyerCd}
+		and p.productCd = #{productCd}
+		and p.startDate = #{startDate}
+		and p.endDate = #{endDate}
+	</select>
+
+	<select id="buyerList" resultType="pricing">
+		select distinct p.buyerCd,
+		b.bname
+		from pricing p, buyer b
+		where p.buyerCd = b.buyerCd
+	</select>
+
+	<select id="productList" resultType="pricing">
+		select distinct
+		p.productCd, d.pname
+		from pricing p, product d
+		where p.productCd =
+		d.productCd
+	</select>
+	
+	<select id="overlapCheck" parameterType="pricing" resultType="integer">
+		select	count(*)
+		from 	pricing
+		where	buyerCd = #{buyerCd} 
+			and productCd = #{productCd} 
+			and ((startDate between #{startDate} and #{endDate})
+			or	(endDate between #{startDate} and #{endDate}))
+	</select>
+
+</mapper>
