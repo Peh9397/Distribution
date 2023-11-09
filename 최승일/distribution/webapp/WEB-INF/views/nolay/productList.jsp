@@ -742,7 +742,7 @@
 		}
 		search();
 	});
-	$('#sortStateDate').on('click', function(){
+	$('#sortStatedate').on('click', function(){
 		if(searchBoxx.sortStatedate.value==0 || searchBoxx.sortStatedate.value == 2){
 			initSort();
 			searchBoxx.sortStatedate.value = 1;

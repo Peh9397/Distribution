@@ -70,22 +70,22 @@
 								category asc
 							</if>
 							<if test="product.sortStateDate ==1">
-								stateDate desc
+								statedate desc
 							</if>
 							<if test="product.sortStateDate ==2">
-								StateDate asc
+								statedate asc
 							</if>
 							<if test="product.sortDel ==1">
-								Del desc
+								del desc
 							</if>
 							<if test="product.sortDel ==2">
-								Del asc
+								del asc
 							</if>
 							<if test="product.sortAddDate ==1">
-								AddDate desc
+								addDate desc
 							</if>
 							<if test="product.sortAddDate ==2">
-								AddDate asc
+								addDate asc
 							</if>
 						)
 					a) 
@@ -142,7 +142,7 @@
     				stock=#{stock}, 
     				unit=#{unit}, 
     				category=#{category}, 
-    				stateDate=sysdate 
+    				statedate=sysdate 
     		where 	productCd=#{productCd}
     	</update>
     	
