@@ -15,6 +15,7 @@ select * from BUYER;
 
 --임시입력(test용)
 insert into EMPLOYEE values('D000','관리자','dis','관리팀','마스터','010-0000-0000','y','2023.10.24','N','관리자아이디',sysdate);
+insert into EMPLOYEE values('D007','관리자','kyd','관리팀','마스터','010-0000-0000','y','2023.10.24','N','관리자아이디',sysdate);
 delete from EMPLOYEE where EMPCD='D00000';
 select * from EMPLOYEE where EMPCD='D000';
 

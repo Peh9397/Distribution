@@ -182,6 +182,11 @@
 		#{startDate} and endDate = #{endDate}
 	</update>
 
+	<update id="restore" parameterType="pricing">
+		update pricing set del='n', stateDate = sysdate 
+		where buyerCd = #{buyerCd} and productCd = #{productCd} and startDate = #{startDate} and endDate = #{endDate}
+	</update>
+
 	<update id="pricingUpdate" parameterType="pricing">
 		update pricing
 		set price =
@@ -194,8 +199,6 @@
 		startDate = #{startDate}
 		and endDate = #{endDate}
 	</update>
-
-
 
 	<select id="getPrice" parameterType="pricing"
 		resultType="integer">
@@ -240,6 +243,15 @@
 			<if test="startPrice != 0 and endPrice != 0">
 				and price between #{startPrice} and #{endPrice}
 			</if>
+			
+			<if test="startDate !=null and startDate !=''">
+				and startDate = #{startDate}
+			</if>
+			
+			<if test="endDate !=null and endDate !=''">
+				and endDate = #{endDate}
+			</if>
+			
 			<if test="discount != null and discount != ''">
 				and discount = #{discount}
 			</if>

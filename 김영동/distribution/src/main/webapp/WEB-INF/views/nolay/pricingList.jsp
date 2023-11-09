@@ -203,17 +203,17 @@
 				<div class="searchInBox">
 					<form name="searchBoxx">
 						<!-- 정렬용 -->
-						<input type="hidden" name="sortBuyerCd" value="${pricing.buyerCd }">
-						<input type="hidden" name="sortBname" value="${pricing.bname }">
-						<input type="hidden" name="sortProductCd" value="${pricing.productCd }">
-						<input type="hidden" name="sortPname" value="${pricing.pname }">
-						<input type="hidden" name="sortPrice" value="${pricing.price }">
-						<input type="hidden" name="sortStartDate" value="${pricing.startDate }">
-						<input type="hidden" name="sortEndDate" value="${pricing.endDate }">
-						<input type="hidden" name="sortDiscount" value="${pricing.discount }">
-						<input type="hidden" name="sortFinalPrice" value="${pricing.finalPrice }">
-						<input type="hidden" name="sortAddDate" value="${pricing.addDate }">
-						<input type="hidden" name="sortStateDate" value="${pricing.stateDate }">
+						<input type="hidden" name="sortBuyerCd" value="${pricing.sortBuyerCd }">
+						<input type="hidden" name="sortBname" value="${pricing.sortBname }">
+						<input type="hidden" name="sortProductCd" value="${pricing.sortProductCd }">
+						<input type="hidden" name="sortPname" value="${pricing.sortPname }">
+						<input type="hidden" name="sortPrice" value="${pricing.sortPrice }">
+						<input type="hidden" name="sortStartDate" value="${pricing.sortStartDate }">
+						<input type="hidden" name="sortEndDate" value="${pricing.sortEndDate }">
+						<input type="hidden" name="sortDiscount" value="${pricing.sortDiscount }">
+						<input type="hidden" name="sortFinalPrice" value="${pricing.sortFinalPrice }">
+						<input type="hidden" name="sortAddDate" value="${pricing.sortAddDate }">
+						<input type="hidden" name="sortStateDate" value="${pricing.sortStateDate }">
 
 						<div class="search-sub-div">
 							<div class="search-item-div">
@@ -283,7 +283,7 @@
 			<!-- 페이지갯수설정  -->
 			<div id="page" align="right" style="margin-bottom: 10px;">
 				<form name="itemLimit">
-					<select name="rowPerpage" id="limit">
+					<select name="rowPerPage" id="limit">
 						<option value="10"
 							<c:if test="${pricing.rowPerPage == 10 }">selected="selected"</c:if>>
 							10개씩보기</option>
@@ -357,7 +357,7 @@
 								<td>${pricing.addDate }</td>
 								<c:if test="${pricing.del == 'n' }">
 									<c:if test="${pricing.stateDate == null }">
-										<td>(${pricing.stateDate }</td>
+										<td>${pricing.stateDate }</td>
 									</c:if>
 									<c:if test="${pricing.stateDate != null }">
 										<td>(수정) ${pricing.stateDate }</td>
@@ -403,9 +403,9 @@
 							</tr>
 							<tr>
 								<th>판매가</th>
-									<td><input type="number" name="price"></td>
+									<td><input type="text" name="price" maxlength="6"></td>
 									<th>할인율</th>
-									<td><input type="number" name="discount"></td>
+									<td><input type="text" name="discount" maxlength="2"></td>
 							</tr>
 							<tr>
 								<th>계약시작일</th>
@@ -419,8 +419,8 @@
 						<div class="insert-btn">
 							<button id="addItem" class="btn">추가</button>
 						</div>
-						<div id="addItemDiv" class="table" style="height: 200px;">
-							<table id="addItemTable" class="list">
+						<div id="addItemDiv" class="table" style="height: 300px;">
+							<table id="addItemTable" class="list" style="height: 30px;">
 								<tr>
 									<th>고객코드</th>
 									<th>상품코드</th>
@@ -447,8 +447,9 @@
 					<c:if test="${pricing.del != 'y'}">
 						<button type="button" onclick="deleteAction()" class="btn">삭제</button>
 					</c:if>
-					<button class="edit-start-btn" onclick="editStart()" style="display: block;">수정하기</button>
-					<button class="edit-end-btn" onclick="editEnd()" style="display: none;">수정완료</button>
+					<c:if test="${pricing.del == 'y'}">
+						<button type="button" onclick="restoreAction()" class="btn">복원</button>
+					</c:if>
 					<div align="right">
 						<button id="excelBtn"><img alt="" src="/distribution/resources/images/excel.png" id="excelImg"></button>
 					</div>
@@ -474,7 +475,9 @@
 		</div>
 	</div>
 </body>
+
 <script type="text/javascript">
+
 	// 등록 팝업 열기 닫기
 	function show() {
 		document.querySelector(".background").className = "background show";
@@ -613,7 +616,6 @@
 				endDate: cells[4].firstChild.data,
 				discount: cells[5].firstChild.data
 			};
-			alert('성공');
 			console.log('성공');
 			console.log(items[i]);
 		};
@@ -688,7 +690,57 @@
 		  });
 	};
 	</script>
-	<script type="text/javascript">	
+	
+	
+	<!-- 	삭제 항목 복원 -->
+		<c:if test="${pricing.del =='y'}">
+			<script type="text/javascript">
+				function delCheckAll(){
+				    if( $("#th_deletedCheckAll").is(':checked') ){
+				      $("input[name=deletedRow]").prop("checked", true);
+				    }else{
+				      $("input[name=deletedRow]").prop("checked", false);
+				    }
+				}
+			
+				document.querySelector("#th_deletedCheckAll").addEventListener("click", delCheckAll);
+			</script>
+		</c:if>
+		<script type="text/javascript">
+		
+		
+		function restoreAction(){
+			  var checkRow = new Array();
+			  $( "input[name='deletedRow']:checked" ).each (function (){
+			    checkRow.push($(this).val());
+			  });
+			  
+			  if(checkRow == ''){
+			    alert("복원할 대상을 선택하세요.");
+			    return false;
+			  }
+			  $.ajax({
+				    url : "pricingRestore.do",
+				    type : "post",
+				    traditional : true,
+				    data : { checkRows : checkRow },
+				    
+				    success : function(result){
+				    	if(result ==1){
+				    		alert("복원완료");
+				    		search();
+				    		
+				    	}else
+				    		alert("복원실패");
+				    }
+			  });
+		};
+		</script>
+		
+		
+		<script type="text/javascript">
+	
+	
 	//	검색
  	function search() {
 		
@@ -707,11 +759,11 @@
 			sortProductCd : searchBoxx.sortProductCd.value,
 			sortPname : searchBoxx.sortPname.value,
 			sortPrice : searchBoxx.sortPrice.value,
-			sortStartDate : searchBoxx.sortStartdate.value,
-			sortEndDate : searchBoxx.sortEnddate.value,
+			sortStartDate : searchBoxx.sortStartDate.value,
+			sortEndDate : searchBoxx.sortEndDate.value,
 			sortDiscount : searchBoxx.sortDiscount.value,
 			sortFinalPrice : searchBoxx.sortFinalPrice.value,
-			sortAddDate : searchBoxx.sortAdddate.value,
+			sortAddDate : searchBoxx.sortAddDate.value,
 			sortStateDate : searchBoxx.sortStateDate.value,
 			
 			rowPerPage : itemLimit.rowPerPage.value,
@@ -727,8 +779,9 @@
 		    	keyword: JSON.stringify(keyword)
 		     },
 		     success: function (result) {
-		    	 $('#content').children().remove();
-				 $('#content').html(result);
+		    	 $('#layoutBody').children().remove();
+				 $('#layoutBody').html(result);
+				 //'#content'
 			 },
 			 error: function () {
 				 alert('실패');
@@ -737,12 +790,22 @@
 
 	};
 
+	
 	document.querySelector("#searchBtn").addEventListener("click", search);
 	
-	
-	
+		
 	//	검색초기화
-	document.querySelector("#initBtn").addEventListener("click",  function(){callView('pricingList.do')});
+	document.querySelector("#initBtn").addEventListener("click",  function(){
+		searchBoxx.buyerCd.value='',
+		searchBoxx.productCd.value='',
+		searchBoxx.startPrice.value=0,
+		searchBoxx.endPrice.value=0,
+		searchBoxx.startDate.value='',
+		searchBoxx.endDate.value='',
+		searchBoxx.discount.value=0,
+		searchBoxx.del.value='n';
+		
+	});
 		
 	//	정렬
 	function initSort() {
@@ -977,154 +1040,89 @@
 
 	document.querySelector("#excelBtn").addEventListener("click", excel);
 	
-	// -------------------------------------------------------------
-	function removeInsert(e) {
-		e.parentNode.parentNode.parentNode.removeChild(e.parentNode.parentNode);
-		
-	}
+// 	테이블 더블클릭하여 수정
+	$(document).ready(function() {
+		let initValue=""; //초기에 있던 값을 전역변수로 선언(수정하다가 커서가 다른곳 클릭하면 원래값으로 돌아가게)
+        $(document).on("dblclick", ".editable", function() { //editable 클래스를 더블클릭했을때 함수실행
+        	initValue=$(this).text(); //원래 있던 값을 value로 해서 input에 텍스트로 보여줘
+            var input="<input type='text' class='input-data' value='"+initValue+"' class='form-control' id='focus' style='width: 45px;'>";
+            $(this).removeClass("editable")
+            $(this).html(input);
+            $('#focus').focus();
+            
+            $(".input-data").keypress(function(e) { //위의 해당 input-data 클래스의 키눌렀을떄 함수 실행
+                var key=e.which;
+            
+                if(key==13) { //13은 enter키를 의미.테이블이 click을 받아 active 상태가 됐을때 enter눌러주면 그 값을 가지고 td로 
+                    var value=$(this).val();
+                    var td=$(this).parent("td");
+                    td.html(value);
+                    td.addClass("editable"); 
+                
+                    // 테이블의 Row 클릭시 값 가져오기
+    	            $(".list tr").keypress(function(){    
+    	
+    		            const str = ""
+    		            const tdArr = new Array(); // 배열 선언
+    		             
+    		             // 현재 클릭된 Row(<tr>)
+    		            const tr = $(this);
+    		            const tdd = tr.children();
+    		             
+    		             // tr.text()는 클릭된 Row 즉 tr에 있는 모든 값을 가져온다.
+    		             console.log("클릭한 Row의 모든 데이터 : "+tr.text());
+    		             
+    		             // 반복문을 이용해서 배열에 값을 담아 사용할 수 도 있다.
+    		             tdd.each(function(i){
+	    		             tdArr.push(tdd.eq(i).text());
+    		             });
+    		             
+    		             console.log("배열에 담긴 값 : "+tdArr);
+    		             
+    		             // td.eq(index)를 통해 값을 가져올 수도 있다.
+    		             buyerCd = tdd.eq(2).text();
+    		             productCd = tdd.eq(4).text();
+    		             price = tdd.eq(6).text();
+    		             startDate = tdd.eq(7).text();
+    		             endDate = tdd.eq(8).text();
+    		             discount = tdd.eq(9).text();
+    		             
+		    			     	console.log(discount);
+		                $.ajax({ //포스트 방식으로 아래의 주소에 데이터 전송
+		    			     method: 'post', 
+		    			     url: 'pricingUpdate.do', 
+		    			     traditional: true,
+		    			     data: { //서버로 데이터를 전송할때  키와 벨류로 전달. BuyerController로 buyer객체에 담겨서 보내짐
+		    			    	 buyerCd: buyerCd,
+		    			    	 productCd: productCd,
+		    			    	 price: price,
+		    			    	 startDate: startDate,
+		    			    	 endDate: endDate,
+		    			    	 discount: discount
+		    			     },
+		    			     success: function (result) { //성공했을떄 호출할 콜백을 지정 
+		    			    	 console.log(result);
+		    			        if (result) {
+		    			        	callView('pricingList.do');
+		    						alert("수정성공");
+		    			        } else {
+		    			        	alert("수정실패");
+		    			        }
+		    				}
+		    		   	});
+    	            });
+               	}
+            });
+        });
+
+        $(document).on("blur", ".input-data", function() { //그 칸에서 포커스out 되면 발생하는 함수
+            
+            var td=$(this).parent("td"); // 해당 td를 td에 저장
+            $(this).remove();
+            td.html(initValue);
+            td.addClass("editable")
+            });
+   });
 	
-	$(function() {
-		
-		$(".readonly").attr("disabled", "disabled");
-		
-		$('#buyerCd').keypress(function() { // enter키를 누르면 메세지 전송
-			//  누른 key값(asscii)  IE ?      IE의 값         IE아닌 모든 web값
-			var keycode = event.keyCode ? event.keyCode : event.which;
-			if (keycode == 13) { // 13이 enter(ascii값)
-				addInsert();
-			}
-		});
-		$('#productCd').keypress(function() { // enter키를 누르면 메세지 전송
-			//  누른 key값(asscii)  IE ?      IE의 값         IE아닌 모든 web값
-			var keycode = event.keyCode ? event.keyCode : event.which;
-			if (keycode == 13) { // 13이 enter(ascii값)
-				addInsert();
-			}
-		});
-		$('#startDate').keypress(function() { // enter키를 누르면 메세지 전송
-			//  누른 key값(asscii)  IE ?      IE의 값         IE아닌 모든 web값
-			var keycode = event.keyCode ? event.keyCode : event.which;
-			if (keycode == 13) { // 13이 enter(ascii값)
-				addInsert();
-			}
-		});
-		$('#endDate').keypress(function() { // enter키를 누르면 메세지 전송
-			//  누른 key값(asscii)  IE ?      IE의 값         IE아닌 모든 web값
-			var keycode = event.keyCode ? event.keyCode : event.which;
-			if (keycode == 13) { // 13이 enter(ascii값)
-				addInsert();
-			}
-		});
-		$('#price').keypress(function() { // enter키를 누르면 메세지 전송
-			//  누른 key값(asscii)  IE ?      IE의 값         IE아닌 모든 web값
-			var keycode = event.keyCode ? event.keyCode : event.which;
-			if (keycode == 13) { // 13이 enter(ascii값)
-				addInsert();
-			}
-		});
-		$('#discount').keypress(function() { // enter키를 누르면 메세지 전송
-			//  누른 key값(asscii)  IE ?      IE의 값         IE아닌 모든 web값
-			var keycode = event.keyCode ? event.keyCode : event.which;
-			if (keycode == 13) { // 13이 enter(ascii값)
-				addInsert();
-			}
-		});
-		$(document).keydown(function() { // enter키를 누르면 메세지 전송
-			//  누른 key값(asscii)  IE ?      IE의 값         IE아닌 모든 web값
-			var keycode = event.keyCode ? event.keyCode : event.which;
-			if (keycode == 27) { // 27이 esc(ascii값)
-				xBack();
-			}
-		});
-		/* 수정 중에 엔터치면 포커스아웃(blur) */
-		$('.edit').keypress(function() { // enter키를 누르면 메세지 전송
-			//  누른 key값(asscii)  IE ?      IE의 값         IE아닌 모든 web값
-			var keycode = event.keyCode ? event.keyCode : event.which;
-			if (keycode == 13) { // 13이 enter(assii값)
-				this.blur();
-			}
-		});
-	})
-	
-	// 수정 
-	function pricingUpdate(pricingPK, type, value) {
-		
-		$(function() {
-			$.ajax({
-			    url: 'pricingUpdate.do?pricingPK='+pricingPK+'&type='+type+'&value='+value,
-				type : "POST",
-				async : true,
-				traditional: true,
-				dataType : "html",
-				cache : false
-			});
-		});
-		
-	}
-	
-	function readOnlyOff() {
-		$(".readonly").attr("disabled", false);
-	}
-	
-	function readOnlyOn() {
-		$(".readonly").attr("disabled", true);
-	}
-	
- 	var editable = 0;
-	
- 	
- 	function editStart() {
- 		document.querySelector('.edit-start-btn').style.display = 'none';
- 		document.querySelector('.edit-finish-btn').style.display = 'block';
- 		$('.priceList-div').css('background-color', '#d3dfea');
- 		editable = 1;
- 		readOnlyOff();
- 		console.log(editable);
- 	}
-	
- 	function editFinish() {
- 		document.querySelector('.edit-start-btn').style.display = 'block';
- 		document.querySelector('.edit-finish-btn').style.display = 'none';
- 		$('.priceList-div').css('background-color', '#fff');
- 		editable = 0;
- 		readOnlyOn();
- 		console.log(editable);
- 	}
- 	
-	var previousValue = "";
-	
-	$(function() {
-			
-			/* f */
-			$('.edit').on("focusin", function(event) {
-				if (editable == 1) {
-					this.readOnly = false;
-					console.log("focusin : "+this.value);
-					previousValue = this.value;
-				};
-			});
-			
-			$('.edit').on("focusout", function(event) {
-				
-				console.log("previousValue : "+previousValue+", thisValue : "+this.value);
-				
-				if (editable == 1 && previousValue != this.value) {
-					this.readOnly = true;
-					var updateInfo = this.getAttribute('id');
-					var str = updateInfo.split('_');
-					productUpdate(str[0], str[1], this.value);
-					console.log("update done!!")
-				} else if (editable == 1 && previousValue == this.value) {
-					this.readOnly = true;
-					console.log("no update(same value)");
-				}
-			});
-	})
-	function delSearchBuyerCd() {
-		 $ ('.buyerList')[0].sumo.selectItem(0); 
-	}
-	function delSearchProductCd() {
-		 $ ('.productList')[0].sumo.selectItem(0); 
-	}
  	</script>
  	</html>
