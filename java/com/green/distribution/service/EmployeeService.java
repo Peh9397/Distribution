@@ -8,22 +8,23 @@ public interface EmployeeService {
 
 	List<Employee> list();
 
-	int getTotal(Employee employee);
+	void insert(Employee employee);
 
 	List<Employee> search(Employee employee);
 
-	void insert(Employee employee);
-
 	void update(Employee employee);
 
-	void employeeDelete(String EMPCD);
+	Employee select(String employeeCd);
 
-	void employeeRestore(String EMPCD);
+	int getTotal(Employee employee);
 
-	int getSALCount(String DEPT);
+	void employeeDelete(String employeeCd);
+
+	void employeeRestore(String employeeCd);
+
+	int getSALCount(String department);
 
 	Employee listForExcel(Employee item);
 
-	Employee select(String EMPCD);
 
 }

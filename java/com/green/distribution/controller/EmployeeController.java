@@ -5,7 +5,9 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.poi.hssf.util.HSSFColor.HSSFColorPredefined;
 import org.apache.poi.ss.usermodel.BorderStyle;
@@ -22,12 +24,12 @@ import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-//import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.green.distribution.model.Employee;
+//import com.green.distribution.model.OrderHead;
 import com.green.distribution.service.EmployeeService;
 
 import net.sf.json.JSONArray;
@@ -35,360 +37,383 @@ import net.sf.json.JSONObject;
 
 @Controller
 public class EmployeeController {
-@Autowired
-private EmployeeService es;
 
-@RequestMapping("emp")
-public String emp(Model model, Employee employee) {
-	
-	int rowPerPage = 20 ;
-	
-	if (employee.getRowPerPage() != 0) {
-		rowPerPage = employee.getRowPerPage();
-	} 
-	if (employee.getPageNum() == null || employee.getPageNum().equals("")) {
-		employee.setPageNum("1");
-	}
-	
-	employee.setDel("N");
-	
-	int currentPage = Integer.parseInt(employee.getPageNum());
-	int total = es.getTotal(employee);
-	
-	employee.pagingBean(currentPage, rowPerPage, total);
-	int startRow = (currentPage - 1) * rowPerPage + 1;
-	int endRow = startRow + rowPerPage - 1;
-	employee.setStartRow(startRow);
-	employee.setEndRow(endRow);
-	
-	employee.setSORTEMPCD(0);
-	employee.setSORTENAME(0);
-	employee.setSORTADDDATE(1);
-	employee.setSORTJOB(0);
-	employee.setSORTDEPT(0);
-	employee.setSORTAUTHORITY(0);
-	
-	List<Employee> empList = es.search(employee);
-	
-	model.addAttribute("empList", empList);
-	
-	return "nolay/emp";
-}
+	@Autowired
+	private EmployeeService es;
 
-@RequestMapping("empInsert")
-@ResponseBody
-public boolean empInsert(Model model, Employee employee) {
-	
-	boolean result = true;
-	
-	try {
-		es.insert(employee);
-	} catch (Exception e) {
-		System.out.println(e.getMessage());
-		result = false;
-	}
-	
-	return result;
-}
-
-@RequestMapping("empSearch")
-public String empSearch(Model model, @RequestParam(name="keyword") String keyword) {
-	
-	System.out.println("1");
-	
-	try {
+	@RequestMapping("emp")
+	public String emp(Model model, Employee employee) {
 		
-		JSONParser p = new JSONParser();
-		Object obj = p.parse(keyword);
-		JSONObject keywordObj = JSONObject.fromObject(obj);
+		int rowPerPage = 10 ;
 		
-		Employee employee = new Employee();
-		
-		String EMPCD = (String) keywordObj.get("EMPCD");
-		employee.setEMPCD(EMPCD);
-		String ENAME = (String) keywordObj.get("ENAME");
-		employee.setENAME(ENAME);
-		String JOB = (String) keywordObj.get("JOB");
-		employee.setJOB(JOB);
-		String DEPT = (String) keywordObj.get("DEPT");
-		employee.setDEPT(DEPT);
-		
-		String ADDFROMDATE = (String) keywordObj.get("ADDFROMDATE");
-		if (ADDFROMDATE != null && !ADDFROMDATE.equals("") ) {
-			Date date = Date.valueOf(ADDFROMDATE);
-			employee.setADDFROMDATE(date);
+		if (employee.getRowPerPage() != 0) {
+			rowPerPage = employee.getRowPerPage();
+		} 
+		if (employee.getPageNum() == null || employee.getPageNum().equals("")) {
+			employee.setPageNum("1");
 		}
 		
-		String ADDTODATE = (String) keywordObj.get("ADDTODATE");
-		if (ADDTODATE != null && !ADDTODATE.equals("") ) {
-			Date date = Date.valueOf(ADDTODATE);
-			employee.setADDTODATE(date);
-		}
+		employee.setDel("N");
 		
-		System.out.println("4");
-		
-		String AUTHORITY = (String) keywordObj.get("AUTHORITY");
-		employee.setAUTHORITY(AUTHORITY);
-		
-		String del = (String) keywordObj.get("del");
-		employee.setDel(del);
-		
-		int SORTEMPCD = Integer.valueOf((String) keywordObj.get("SORTEMPCD"));
-		employee.setSORTEMPCD(SORTEMPCD);
-		int SORTENAME = Integer.valueOf((String) keywordObj.get("SORTENAME"));
-		employee.setSORTENAME(SORTENAME);
-		int SORTJOB = Integer.valueOf((String) keywordObj.get("SORTJOB"));
-		employee.setSORTJOB(SORTJOB);
-		int SORTDEPT = Integer.valueOf((String) keywordObj.get("SORTDEPT"));
-		employee.setSORTDEPT(SORTDEPT);
-		int SORTADDDATE = Integer.valueOf((String) keywordObj.get("SORTADDDATE"));
-		employee.setSORTADDDATE(SORTADDDATE);
-		int SORTAUTHORITY = Integer.valueOf((String) keywordObj.get("SORTAUTHORITY"));
-		employee.setSORTAUTHORITY(SORTAUTHORITY);			
-		
-		int rowPerPage = Integer.valueOf((String) keywordObj.get("rowPerPage"));
-		int currentPage = Integer.valueOf((String) keywordObj.get("currentPage"));
+		int currentPage = Integer.parseInt(employee.getPageNum());
 		int total = es.getTotal(employee);
 		
 		employee.pagingBean(currentPage, rowPerPage, total);
-		
 		int startRow = (currentPage - 1) * rowPerPage + 1;
 		int endRow = startRow + rowPerPage - 1;
 		employee.setStartRow(startRow);
 		employee.setEndRow(endRow);
 		
-		List<Employee> empList = es.search(employee);
-		System.out.println(empList.size());
+		employee.setSortEmployeeCd(0);
+		employee.setSortEname(0);
+		employee.setSortTel(0);
+		employee.setSortAdddate(1);
+		employee.setSortJob(0);
+		employee.setSortDepartment(0);
+		employee.setSortAuthority(0);
 		
-		for (Employee oh : empList) {
-			System.out.println(oh.toString());
+		List<Employee> empList = es.search(employee);
+		for(Employee emp : empList) {
+			System.out.println(emp.getEmployeeCd());
+		}
+		model.addAttribute("empList", empList);
+		
+		return "nolay/emp";
+	}
+	
+	@RequestMapping("empInsert")
+	@ResponseBody
+	public boolean empInsert(Model model, Employee employee) {
+		
+		boolean result = true;
+		
+		try {
+			es.insert(employee);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			result = false;
 		}
 		
-		model.addAttribute("empList", empList);
-		model.addAttribute("employee", employee);
-		
-	} catch (ParseException e) {
-		System.out.println(e.getMessage());
+		return result;
 	}
 	
-	return "nolay/emp";
-}
-
-@RequestMapping("empUpdate.do")
-@ResponseBody
-public boolean empUpdate(Employee employee) {
-	System.out.println(employee.getEMPCD());
-	boolean result = true;
-	
-	try {
-		es.update(employee);
-	} catch (Exception e) {
-		System.out.println(e.getMessage());
-		result = false;
-	}
-	
-	return result;
-}
-
-@RequestMapping("employeeDelete")
-@ResponseBody
-public boolean employeeDelete(String[] checkRows) {
-	boolean result = true;
-	
-	for (String EMPCD : checkRows){
-		try {
-			es.employeeDelete(EMPCD);
-		} catch (Exception e) {
-			System.out.println("실패 : " + EMPCD);
-			result = false;
-		}			
-	}
-	return result;
-}
-
-@RequestMapping("employeeRestore")
-@ResponseBody
-public boolean employeeRestore(String[] checkRows) {
-	boolean result = true;
-	
-	for (String EMPCD : checkRows){
-		try {
-			es.employeeRestore(EMPCD);
-		} catch (Exception e) {
-			System.out.println("실패 : " + EMPCD);
-			result = false;
-		}			
-	}
-	return result;
-}
-
-@RequestMapping("getSALCount")
-@ResponseBody
-public String getSALCount(String DEPT) {
-	int count = es.getSALCount(DEPT);
-	String number = String.format("%03d", count);
-	
-	System.out.println(number);
-	
-	return number;
-}
-
-@RequestMapping("empExcelDown")
-@ResponseBody
-public void orderExcelDown(HttpServletResponse response, @RequestParam(name="items")String items) throws IOException {
-	System.out.println("시작");
-	//List<OrderHead> list = is.search(checkRow); List<OrderHead> checkRow,
-	// 출력할 주문리스트
-	List<Employee> list = new ArrayList<>();
-	
-	Employee orderRow = new Employee();
-
-	try {
-		JSONParser p = new JSONParser();
-		Object obj = p.parse(items);
-		JSONArray arr = JSONArray.fromObject(obj);
+	@RequestMapping("empSearch")
+	public String empSearch(Model model, @RequestParam(name="keyword") String keyword) {
 		
 		System.out.println("1");
 		
-		Employee item = new Employee();
-		
-		for (int i = 0; i < arr.size(); i++) {
+		try {
 			
-			JSONObject itemObj = (JSONObject) arr.get(i);
-			String EMPCD = (String) itemObj.get("EMPCD");
-			System.out.println(EMPCD);
+			JSONParser p = new JSONParser();
+			Object obj = p.parse(keyword);
+			JSONObject keywordObj = JSONObject.fromObject(obj);
 			
-			item.setEMPCD(EMPCD);
+			Employee employee = new Employee();
 			
-			System.out.println("sql전");
-			orderRow = es.listForExcel(item);
-			System.out.println("sql후");
-			list.add(orderRow);
+			String employeeCd = (String) keywordObj.get("employeeCd");
+			employee.setEmployeeCd(employeeCd);
+			String ename = (String) keywordObj.get("ename");
+			employee.setEname(ename);
+			String job = (String) keywordObj.get("job");
+			employee.setJob(job);
+			String tel = (String) keywordObj.get("tel");
+			employee.setTel(tel);
+			String department = (String) keywordObj.get("department");
+			employee.setDepartment(department);
+			
+			String addFromDate = (String) keywordObj.get("addFromDate");
+			if (addFromDate != null && !addFromDate.equals("") ) {
+				Date date = Date.valueOf(addFromDate);
+				employee.setAddFromDate(date);
+			}
+			
+			String addToDate = (String) keywordObj.get("addToDate");
+			if (addToDate != null && !addToDate.equals("") ) {
+				Date date = Date.valueOf(addToDate);
+				employee.setAddToDate(date);
+			}
+			
+			System.out.println("4");
+			
+			String authority = (String) keywordObj.get("authority");
+			employee.setAuthority(authority);
+			
+			String del = (String) keywordObj.get("del");
+			employee.setDel(del);
+			
+			int sortEmployeeCd = Integer.valueOf((String) keywordObj.get("sortEmployeeCd"));
+			employee.setSortEmployeeCd(sortEmployeeCd);
+			int sortEname = Integer.valueOf((String) keywordObj.get("sortEname"));
+			employee.setSortEname(sortEname);
+			int sortJob = Integer.valueOf((String) keywordObj.get("sortJob"));
+			employee.setSortJob(sortJob);
+			int sortTel = Integer.valueOf((String) keywordObj.get("sortTel"));
+			employee.setSortJob(sortTel);
+			int sortDepartment = Integer.valueOf((String) keywordObj.get("sortDepartment"));
+			employee.setSortDepartment(sortDepartment);
+			int sortAdddate = Integer.valueOf((String) keywordObj.get("sortAdddate"));
+			employee.setSortAdddate(sortAdddate);
+			int sortAuthority = Integer.valueOf((String) keywordObj.get("sortAuthority"));
+			employee.setSortAuthority(sortAuthority);			
+			
+			int rowPerPage = Integer.valueOf((String) keywordObj.get("rowPerPage"));
+			int currentPage = Integer.valueOf((String) keywordObj.get("currentPage"));
+			int total = es.getTotal(employee);
+			
+			employee.pagingBean(currentPage, rowPerPage, total);
+			
+			int startRow = (currentPage - 1) * rowPerPage + 1;
+			int endRow = startRow + rowPerPage - 1;
+			employee.setStartRow(startRow);
+			employee.setEndRow(endRow);
+			
+			List<Employee> empList = es.search(employee);
+			System.out.println(empList.size());
+			
+			for (Employee oh : empList) {
+				System.out.println(oh.toString());
+			}
+			
+			model.addAttribute("empList", empList);
+			model.addAttribute("employee", employee);
+			
+		} catch (ParseException e) {
+			System.out.println(e.getMessage());
 		}
 		
+		return "nolay/emp";
+	}
+	
+	@RequestMapping("empUpdate.do")
+	@ResponseBody
+	public boolean empUpdate(Employee employee) {
+		System.out.println(employee.getEmployeeCd());
+		boolean result = true;
 		
-	} catch (ParseException e) {
-		System.out.println(e.getMessage());
+		try {
+			es.update(employee);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			result = false;
+		}
+		
+		return result;
+	}
+	
+	@RequestMapping("employeeDelete")
+	@ResponseBody
+	public boolean employeeDelete(String[] checkRows) {
+		boolean result = true;
+		
+		for (String employeeCd : checkRows){
+			try {
+				es.employeeDelete(employeeCd);
+			} catch (Exception e) {
+				System.out.println("실패 : " + employeeCd);
+				result = false;
+			}			
+		}
+		return result;
 	}
 	
 	
-	System.out.println("size"+list.size());
+	@RequestMapping("employeeRestore")
+	@ResponseBody
+	public boolean employeeRestore(String[] checkRows) {
+		boolean result = true;
+		
+		for (String employeeCd : checkRows){
+			try {
+				es.employeeRestore(employeeCd);
+			} catch (Exception e) {
+				System.out.println("실패 : " + employeeCd);
+				result = false;
+			}			
+		}
+		return result;
+	}
 	
-	// 워크북 생성
+	@RequestMapping("getSALCount")
+	@ResponseBody
+	public String getSALCount(String department) {
+		int count = es.getSALCount(department);
+		String number = String.format("%03d", count);
+		
+		System.out.println(number);
+		
+		return number;
+	}
+	
+	@RequestMapping("empExcelDown")
+	@ResponseBody
+	public void orderExcelDown(HttpServletResponse response, @RequestParam(name="items")String items) throws IOException {
+		System.out.println("시작");
+		//List<OrderHead> list = is.search(checkRow); List<OrderHead> checkRow,
+		// 출력할 주문리스트
+		List<Employee> list = new ArrayList<>();
+		
+		Employee orderRow = new Employee();
+
+		try {
+			JSONParser p = new JSONParser();
+			Object obj = p.parse(items);
+			JSONArray arr = JSONArray.fromObject(obj);
+			
+			System.out.println("1");
+			
+			Employee item = new Employee();
+			
+			for (int i = 0; i < arr.size(); i++) {
+				
+				JSONObject itemObj = (JSONObject) arr.get(i);
+				String employeeCd = (String) itemObj.get("employeeCd");
+				System.out.println(employeeCd);
+				
+				item.setEmployeeCd(employeeCd);
+				
+				System.out.println("sql전");
+				orderRow = es.listForExcel(item);
+				System.out.println("sql후");
+				list.add(orderRow);
+			}
+			
+			
+		} catch (ParseException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		
+		System.out.println("size"+list.size());
+
+		
+		
+			
+		
+		
+		// 워크북 생성
 		Workbook wb = new XSSFWorkbook();
 		Sheet sheet = wb.createSheet("주문 현황");
 		Row row = null;
 		Cell cell = null;
 		int rowNo = 0;
-			
-			// 테이블 헤더용 스타일
-			CellStyle headStyle = wb.createCellStyle();
-			
-			// 가는 경계선
-			headStyle.setBorderTop(BorderStyle.THIN);
-		    headStyle.setBorderBottom(BorderStyle.THIN);
-		    headStyle.setBorderLeft(BorderStyle.THIN);
-		    headStyle.setBorderRight(BorderStyle.THIN);
+		
+		// 테이블 헤더용 스타일
+		CellStyle headStyle = wb.createCellStyle();
+		
+		// 가는 경계선
+		headStyle.setBorderTop(BorderStyle.THIN);
+	    headStyle.setBorderBottom(BorderStyle.THIN);
+	    headStyle.setBorderLeft(BorderStyle.THIN);
+	    headStyle.setBorderRight(BorderStyle.THIN);
 
-		    // 배경색 노란색
-		    headStyle.setFillForegroundColor(HSSFColorPredefined.YELLOW.getIndex());
-		    headStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-		    
-		    // 데이터 가운데 정렬
-		    headStyle.setAlignment(HorizontalAlignment.CENTER);
-		    
-		    // 데이터용 경계 스타일 테두리만 지정
-		    CellStyle bodyStyle = wb.createCellStyle();
-		    bodyStyle.setBorderTop(BorderStyle.THIN);
-		    bodyStyle.setBorderBottom(BorderStyle.THIN);
-		    bodyStyle.setBorderLeft(BorderStyle.THIN);
-		    bodyStyle.setBorderRight(BorderStyle.THIN);
-		    
-		    // 헤더 생성
-		    row = sheet.createRow(rowNo++);
-		    
-		    cell = row.createCell(0);
-		    cell.setCellStyle(headStyle);
-		    cell.setCellValue("직원코드");
-		    
+	    // 배경색 노란색
+	    headStyle.setFillForegroundColor(HSSFColorPredefined.YELLOW.getIndex());
+	    headStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+	    
+	    // 데이터 가운데 정렬
+	    headStyle.setAlignment(HorizontalAlignment.CENTER);
+	    
+	    // 데이터용 경계 스타일 테두리만 지정
+	    CellStyle bodyStyle = wb.createCellStyle();
+	    bodyStyle.setBorderTop(BorderStyle.THIN);
+	    bodyStyle.setBorderBottom(BorderStyle.THIN);
+	    bodyStyle.setBorderLeft(BorderStyle.THIN);
+	    bodyStyle.setBorderRight(BorderStyle.THIN);
+	    
+	    // 헤더 생성
+	    row = sheet.createRow(rowNo++);
+	    
+	    cell = row.createCell(0);
+	    cell.setCellStyle(headStyle);
+	    cell.setCellValue("직원코드");
+	    
+	    cell = row.createCell(1);
+	    cell.setCellStyle(headStyle);
+	    cell.setCellValue("직원명");
+	    
+	    cell = row.createCell(2);
+	    cell.setCellStyle(headStyle);
+	    cell.setCellValue("직책");
+	    
+	    cell = row.createCell(3);
+	    cell.setCellStyle(headStyle);
+	    cell.setCellValue("연락처");
+	    
+	    cell = row.createCell(4);
+	    cell.setCellStyle(headStyle);
+	    cell.setCellValue("부서");
+	    
+	    cell = row.createCell(5);
+	    cell.setCellStyle(headStyle);
+	    cell.setCellValue("등록일");
+	    
+	    cell = row.createCell(6);
+	    cell.setCellStyle(headStyle);
+	    cell.setCellValue("승인권한");
+	    
+	    cell = row.createCell(7);
+	    cell.setCellStyle(headStyle);
+	    cell.setCellValue("상태변경일");
+	    
+	    
+	 // 데이터 부분 생성
+	    for(Employee li : list) {
+
+	        row = sheet.createRow(rowNo++);
+
+	        cell = row.createCell(0);
+	        cell.setCellStyle(bodyStyle);
+	        cell.setCellValue(li.getEmployeeCd());
+	        System.out.println(li.getEmployeeCd());
+	        
 		    cell = row.createCell(1);
-		    cell.setCellStyle(headStyle);
-		    cell.setCellValue("직원명");
+		    cell.setCellStyle(bodyStyle);
+		    cell.setCellValue(li.getEname());
+		    System.out.println(li.getEname());
 		    
 		    cell = row.createCell(2);
-		    cell.setCellStyle(headStyle);
-		    cell.setCellValue("직책");
+		    cell.setCellStyle(bodyStyle);
+		    cell.setCellValue(li.getJob());
+		    System.out.println(li.getJob());
 		    
 		    cell = row.createCell(3);
-		    cell.setCellStyle(headStyle);
-		    cell.setCellValue("부서");
+		    cell.setCellStyle(bodyStyle);
+		    cell.setCellValue(li.getTel());
+		    System.out.println(li.getTel());
 		    
 		    cell = row.createCell(4);
-		    cell.setCellStyle(headStyle);
-		    cell.setCellValue("등록일");
+		    cell.setCellStyle(bodyStyle);
+		    cell.setCellValue(li.getDepartment());
+		    System.out.println(li.getDepartment());
 		    
 		    cell = row.createCell(5);
-		    cell.setCellStyle(headStyle);
-		    cell.setCellValue("승인권한");
+		    cell.setCellStyle(bodyStyle);
+		    cell.setCellValue(li.getAdddate().toString());
+		    System.out.println(li.getAdddate().toString());
 		    
 		    cell = row.createCell(6);
-		    cell.setCellStyle(headStyle);
-		    cell.setCellValue("상태변경일");
+		    cell.setCellStyle(bodyStyle);
+		    cell.setCellValue(li.getAuthority());
+		    System.out.println(li.getAuthority());
 		    
-		    
-		 // 데이터 부분 생성
-		    for(Employee li : list) {
-
-		        row = sheet.createRow(rowNo++);
-
-		        cell = row.createCell(0);
-		        cell.setCellStyle(bodyStyle);
-		        cell.setCellValue(li.getEMPCD());
-		        System.out.println(li.getEMPCD());
-		        
-			    cell = row.createCell(1);
-			    cell.setCellStyle(bodyStyle);
-			    cell.setCellValue(li.getENAME());
-			    System.out.println(li.getENAME());
-			    
-			    cell = row.createCell(2);
-			    cell.setCellStyle(bodyStyle);
-			    cell.setCellValue(li.getJOB());
-			    System.out.println(li.getJOB());
-			    
-			    cell = row.createCell(3);
-			    cell.setCellStyle(bodyStyle);
-			    cell.setCellValue(li.getDEPT());
-			    System.out.println(li.getDEPT());
-			    
-			    cell = row.createCell(4);
-			    cell.setCellStyle(bodyStyle);
-			    cell.setCellValue(li.getADDDATE().toString());
-			    System.out.println(li.getADDDATE().toString());
-			    
-			    cell = row.createCell(5);
-			    cell.setCellStyle(bodyStyle);
-			    cell.setCellValue(li.getAUTHORITY());
-			    System.out.println(li.getAUTHORITY());
-			    
-			    cell = row.createCell(6);
-			    cell.setCellStyle(bodyStyle);
-			    cell.setCellValue(li.getSTATEDATE().toString());
-			    System.out.println(li.getSTATEDATE().toString());
-		    }
-		
-		    // 컨텐츠 타입과 파일명 지정
-		    response.setContentType("ms-vnd/excel");
-		    response.setHeader("Content-Disposition", "attachment;filename=order.xlsx");
-		    
-		    // 엑셀 출력
-		    try {
-	            wb.write(response.getOutputStream());
-	        } finally {
-	            wb.close();
-	        }
-		    
-		    
-		}
-		
+		    cell = row.createCell(7);
+		    cell.setCellStyle(bodyStyle);
+		    cell.setCellValue(li.getStatedate().toString());
+		    System.out.println(li.getStatedate().toString());
+	    }
+	
+	    // 컨텐츠 타입과 파일명 지정
+	    response.setContentType("ms-vnd/excel");
+	    response.setHeader("Content-Disposition", "attachment;filename=order.xlsx");
+	    
+	    // 엑셀 출력
+	    try {
+            wb.write(response.getOutputStream());
+        } finally {
+            wb.close();
+        }
+	    
+	    
 	}
+	
+}

@@ -8,22 +8,22 @@ public interface EmployeeDao {
 
 	List<Employee> list();
 
-	List<Employee> search(Employee employee);
-
-	int getTotal(Employee employee);
-
 	void insert(Employee employee);
+
+	List<Employee> search(Employee employee);
 
 	void update(Employee employee);
 
-	void employeeDelete(String EMPCD);
+	Employee select(String employeeCd);
 
-	void employeeRestore(String eMPCD);
+	int getTotal(Employee employee);
 
-	int getSALCount(String DEPT);
+	void employeeDelete(String employeeCd);
+
+	void employeeRestore(String employeeCd);
+
+	int getSALCount(String department);
 
 	Employee listForExcel(Employee item);
-
-	Employee select(String eMPCD);
 
 }

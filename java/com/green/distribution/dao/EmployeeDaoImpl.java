@@ -10,45 +10,60 @@ import com.green.distribution.model.Employee;
 
 @Repository
 public class EmployeeDaoImpl implements EmployeeDao {
+
 	@Autowired
 	private SqlSessionTemplate sst;
+
+	@Override
 	public List<Employee> list() {
 		return sst.selectList("employeens.list");
 	}
+
+	@Override
+	public void insert(Employee employee) {
+		sst.insert("employeens.insert", employee);
+		
+	}
+
 	@Override
 	public List<Employee> search(Employee employee) {
 		return sst.selectList("employeens.search", employee);
 	}
-	@Override
-	public int getTotal(Employee employee) {
-		return sst.selectOne("employeens.getTotal", employee);
-	}
-	@Override
-	public void insert(Employee employee) {
-		sst.insert("employeens.insert", employee);
-	}
+
 	@Override
 	public void update(Employee employee) {
 		sst.update("employeens.update", employee);
 	}
+
 	@Override
-	public void employeeDelete(String EMPCD) {
-		sst.update("employeens.employeeDelete", EMPCD);
+	public Employee select(String employeeCd) {
+		return sst.selectOne("employeens.select",employeeCd);
+	}
+
+	@Override
+	public int getTotal(Employee employee) {
+		return sst.selectOne("employeens.getTotal", employee);
+	}
+
+	@Override
+	public void employeeDelete(String employeeCd) {
+		sst.update("employeens.employeeDelete", employeeCd);
+		
+	}
+
+	@Override
+	public void employeeRestore(String employeeCd) {
+		sst.update("employeens.employeeRestore", employeeCd);
+		
 	}
 	@Override
-	public void employeeRestore(String EMPCD) {
-		sst.update("employeens.employeeRestore", EMPCD);
+	public int getSALCount(String department) {
+		return sst.selectOne("employeens.getSALCount", department);
 	}
-	@Override
-	public int getSALCount(String DEPT) {
-		return sst.selectOne("employeens.getSALCount", DEPT);
-	}
+
 	@Override
 	public Employee listForExcel(Employee item) {
 		return sst.selectOne("employeens.listForExcel", item);
 	}
-	@Override
-	public Employee select(String EMPCD) {
-		return sst.selectOne("employeens.select",EMPCD);
-	}
+
 }

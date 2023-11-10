@@ -7,6 +7,53 @@
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <style type="text/css">
+/* 팝업 추가창 */
+	.background {
+	  position: fixed;
+	  top: 0;
+	  left: 0;
+	  width: 100%;
+	  height: 100vh;
+	  background-color: rgba(0, 0, 0, 0.3);
+	  z-index: 1000;
+	  
+	  /* 숨기기 */
+	  z-index: -1;
+	  opacity: 0;
+	}
+	
+	.window {
+	  position: relative;
+	  width: 100%;
+	  height: 100%;
+	}
+	
+	.popup {
+	  position: absolute;
+	  top: 50%;
+	  left: 50%;
+	  transform: translate(-50%, -50%);
+	  background-color: #ffffff;
+	  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.3);
+	  
+	  /* 임시 지정 */
+	  width: 600px;
+	  height: 720px;
+	  
+	  /* 초기에 약간 아래에 배치 */
+	  transform: translate(-50%, -40%);
+	}
+	
+	.show {
+	  opacity: 1;
+	  z-index: 1000;
+	  transition: all .5s;
+	}
+	
+	.show .popup {
+	  transform: translate(-50%, -50%);
+	  transition: all .5s;
+	}
 	input:focus {
 		outline: none;
 	}
@@ -62,6 +109,10 @@
 		padding: 10px;
 		height: 50%;
 	}
+	#excelBtn, #excelImg {
+		width: 24px;
+		border: none;
+	}
 	
 	table {
 		width: 85%;
@@ -69,66 +120,77 @@
 </style>
 </head>
 <body>
-<div class="container">
-	<h2 class="menuName">직원 관리</h2>
+<div id="container">
+	<h1 class="menuName">직원 관리</h1>
+	
 	<div id="searchBox">
 		<div class="searchInBox">
 			<form name="searchBoxx">
-				<input type="hidden" name="SORTEMPCD" value="${employee.SORTEMPCD }">
-				<input type="hidden" name="SORTENAME" value="${employee.SORTENAME }">
-				<input type="hidden" name="SORTJOB" value="${employee.SORTJOB }">
-				<input type="hidden" name="SORTTEL" value="${employee.SORTTEL }">
-				<input type="hidden" name="SORTDEPT" value="${employee.SORTDEPT }">
-				<input type="hidden" name="SORTADDDATE" value="${employee.SORTADDDATE }">
-				<input type="hidden" name="SORTAUTHORITY" value="${employee.SORTAUTHORITY }">
+				
+				<input type="hidden" name="sortEmployeeCd" value="${employee.sortEmployeeCd }">
+				<input type="hidden" name="sortEname" value="${employee.sortEname }">
+				<input type="hidden" name="sortTel" value="${employee.sortTel }">
+				<input type="hidden" name="sortJob" value="${employee.sortJob }">
+				<input type="hidden" name="sortDepartment" value="${employee.sortDepartment }">
+				<input type="hidden" name="sortAdddate" value="${employee.sortAdddate }">
+				<input type="hidden" name="sortAuthority" value="${employee.sortAuthority }">
 				
 			
 				<div class="search-sub-div">
 					<div class="search-item-div">
 						<div class="search-item-text">직원코드</div>
-						<input type="search" name="EMPCD" value="${employee.EMPCD }">
+						<input type="search" name="employeeCd" value="${employee.employeeCd }">
 					</div>
 					<div class="search-item-div">
 						<div class="search-item-text">직원명</div>
-						<input type="search" name="ENAME" value="${employee.ENAME }">
+						<input type="search" name="ename" value="${employee.ename }">
 					</div>
 					<div class="search-item-div">
 						<div class="search-item-text">등록일</div>
-						<input type="date" name="ADDFROMDATE" value=${employee.ADDFROMDATE }>
-						~<input type="date" name="ADDTODATE" value=${employee.ADDTODATE }>
+						<input type="date" name="addFromDate" value=${employee.addFromDate }>
+						~<input type="date" name="addToDate" value=${employee.addToDate }>
 					</div>
 				</div>
 				<div class="search-sub-div">
 					<div class="search-item-div">
-						<div class="search-item-text">직책</div>
-						<input type="search" name="JOB" value="${employee.JOB }">
+						<div class="search-item-text">연락처</div>
+						<input type="search" name="tel" value="${employee.tel }">
 					</div>
 					<div class="search-item-div">
-						<div class="search-item-text">연락처</div>
-						<input type="search" name="TEL" value="${employee.TEL }">
+						<div class="search-item-text">직책</div>
+						<input type="search" name="job" value="${employee.job }">
 					</div>
 					<div class="search-item-div">
 						<div class="search-item-text">부서</div>
-						<input type="search" name="DEPT" value="${employee.DEPT }">
+						<input type="search" name="department" value="${employee.department }">
 					</div>
+					
 					<div class="search-item-div">
 						<div class="search-item-text">승인권한</div>
 						<select name="authority" class="search">
 							<option value="null">모두</option>			
-							<option value="Y">있음</option>
+							<option value="Y">있음</option>			
 							<option value="N">없음</option>
+						</select>
+					</div>
+					<div class="search-item-div">
+						<div class="search-item-text">활성상태</div>
+						<select name="del" class="search">
+							<option value="N">활성</option>
+							<option value="Y" <c:if test="${employee.del == 'Y'}">selected="selected"</c:if> >비활성 </option>
+							<option value="All" <c:if test="${employee.del == 'All'}"> selected="selected" </c:if>>모두</option>
 						</select>
 					</div>
 				</div>
 			</form>
-			</div>
 		</div>
 		<div class="search-btn">
 			<button id="searchBtn">검색</button>
 			<button id="initBtn">초기화</button>
 		</div>
-		
-		<div id="button-div">
+	</div>
+	
+	<div id="button-div">
 		<button id="show" class="btn">등록</button>
 		<c:if test="${employee.del != 'Y'}">
 			<button type="button" onclick="deleteAction()" class="btn">삭제</button>
@@ -138,26 +200,30 @@
 		</c:if>
 		<button id="excelBtn"><img alt="" src="/distribution/resources/images/Excel.png" id="excelImg"></button>
 		
-		<div id="page" align="right" style="margin-bottom: 10px;">
+		<div id="page">
 			<form name="itemLimit">
 				<select name="rowPerPage" id="limit">
-					<option value="20" <c:if test="${employee.rowPerPage == 5 }">selected="selected"</c:if> >
-						5개씩 보기
+					<option value="10" <c:if test="${employee.rowPerPage == 10 }">selected="selected"</c:if> >
+						10개씩보기
 					</option>
-					<option value="50" <c:if test="${employee.rowPerPage == 10 }">selected="selected"</c:if> >
-						10개씩 보기
+					<option value="20" <c:if test="${employee.rowPerPage == 20 }">selected="selected"</c:if> >
+						20개씩보기
 					</option>
-					<option value="100" <c:if test="${employee.rowPerPage == 20 }">selected="selected"</c:if> >
-						20개씩 보기
+					<option value="30" <c:if test="${employee.rowPerPage == 30 }">selected="selected"</c:if> >
+						30개씩보기
 					</option>
-					<option value="300" <c:if test="${employee.rowPerPage == 30 }">selected="selected"</c:if> >
-						30개씩 보기
+					<option value="40" <c:if test="${employee.rowPerPage == 40 }">selected="selected"</c:if> >
+						40개씩보기
+					</option>
+					<option value="50" <c:if test="${employee.rowPerPage == 50 }">selected="selected"</c:if> >
+						50개씩보기
 					</option>
 				</select>
 			</form>
 		</div>
 	</div>
-	<div class="table">
+	
+	<div class="table"> 
 		<table class="list">
 			<tr>
 				<th class="fixed">
@@ -169,45 +235,45 @@
 					</c:if>
 				</th>
 				<th class="fixed">순번</th>
-				<th class="fixed" id="SORTEMPCD">직원코드</th>
-				<th class="fixed" id="SORTENAME">직원명</th>
-				<th class="fixed" id="SORTJOB">직책</th>
-				<th class="fixed" id="SORTTEL">연락처</th>
-				<th class="fixed" id="SORTDEPT">부서</th>
-				<th class="fixed" id="SORTADDDATE">등록일</th>
-				<th class="fixed" id="SORTAUTHORITY">승인권한</th>
+				<th class="fixed" id="sortEmployeeCd">직원코드</th>
+				<th class="fixed" id="sortEname">직원명</th>
+				<th class="fixed" id="sortJob">직책</th>
+				<th class="fixed" id="sortTel">연락처</th>
+				<th class="fixed" id="sortDepartment">부서</th>
+				<th class="fixed" id="sortAdddate">등록일</th>
+				<th class="fixed" id="sortAuthority">승인권한</th>
 				<th class="fixed">상태변경일</th>
 			</tr>
 			<c:forEach var="emp" items="${empList }">			
 				<tr class="itemRow"
-					<c:if test="${emp.del =='Y'}">style="background-color: #44444C;"</c:if>
+					<c:if test="${emp.del =='Y'}">style="background-color: #c0c0c052;"</c:if>
 				>
 					<td>
 						<c:if test="${emp.del =='Y'}">
-							<input type="checkbox" name="deletedRow" value="${emp.EMPCD }" class="excel">
+							<input type="checkbox" name="deletedRow" value="${emp.employeeCd }" class="excel">
 						</c:if>
 						<c:if test="${emp.del =='N'}">
-							<input type="checkbox" name="checkRow" value="${emp.EMPCD }" class="red-check excel">
+							<input type="checkbox" name="checkRow" value="${emp.employeeCd }" class="red-check excel">
 						</c:if>
 					</td>
 					<td>${emp.rn }</td>
-					<td>${emp.EMPCD }</td>
-					<td class="editable">${emp.ENAME }</td>
-					<td class="editable">${emp.JOB }</td>
-					<td class="editable">${emp.TEL }</td>
-					<td class="editable">${emp.DEPT }</td>
-					<td>${emp.ADDDATE }</td>
-					<td class="editable">${emp.AUTHORITY }</td>
+					<td>${emp.employeeCd }</td>
+					<td class="editable">${emp.ename }</td>
+					<td class="editable">${emp.job }</td>
+					<td class="editable">${emp.tel }</td>
+					<td class="editable">${emp.department }</td>
+					<td>${emp.adddate }</td>
+					<td class="editable">${emp.authority }</td>
 					<c:if test="${emp.del == 'N'}">
-							<c:if test="${emp.STATEDATE == null}">
-								<td>${emp.STATEDATE }</td>
+							<c:if test="${emp.statedate == null}">
+								<td>${emp.statedate }</td>
 							</c:if>	
-							<c:if test="${emp.STATEDATE != null}">
-								<td>${emp.STATEDATE } (수정)</td>
+							<c:if test="${emp.statedate != null}">
+								<td>${emp.statedate } (수정)</td>
 							</c:if>	
 						</c:if>
 						<c:if test="${emp.del == 'Y'}">
-							<td>${emp.STATEDATE } (삭제)</td>
+							<td>${emp.statedate } (삭제)</td>
 						</c:if>
 				</tr>
 			</c:forEach>
@@ -225,7 +291,7 @@
 			</c:if>
 		</form>
 	</div>
-	
+
 	<!-- 등록 창 팝업 -->
 	<div class="background">
 		<div class="window">
@@ -237,34 +303,34 @@
 						<tr>
 							<th>부서</th>
 							<td>
-								<select name="DEPT" id="DEPT"  class="search">
+								<select name="department" id="department"  class="search">
 									<option value=""></option>
 									<option value="영업">영업</option>
 									<option value="물류">물류</option>
-									<option value="직원">직원										
+									<option value="직원">직원</option>						
 								</select>
 							</td>
 						</tr>
 						<tr>
 							<th>직원코드</th>
-							<td><input type="text" name="EMPCD" class="readonly" readonly="readonly"></td>
+							<td><input type="text" name="employeeCd" class="readonly" readonly="readonly"></td>
 						</tr>
 						<tr>
 							<th>암호</th>
-							<td><input type="PASSWORD" name="PASSWORD"></td>
+							<td><input type="password" name="password"></td>
 						</tr>
 						<tr>
-						<th>연락처</th>
-						<td><input type="text" placeholder="010-****-****" name="TEL"></td>
-					</tr>
+							<th>연락처</th>
+							<td><input type="tel" name="tel"></td>
+						</tr>
 						<tr>
 							<th>직원명</th>
-							<td><input type="text" name="ENAME"></td>
+							<td><input type="text" name="ename"></td>
 						</tr>
 						<tr>
 							<th>승인권한</th>
 							<td>
-								<select name="AUTHORITY" class="search">
+								<select name="authority" class="search">
 									<option value=""></option>
 									<option value="N">없음</option>
 									<option value="Y">있음</option>
@@ -274,13 +340,13 @@
 						<tr>
 							<th>직책</th>
 							<td>
-								<select name="JOB"  class="search">
+								<select name="job"  class="search">
 									<option value=""></option>
 									<option>사원
 									<option>대리									
 									<option>과장									
 									<option>차장									
-									<option>부장
+									<option>부장									
 									<option>사장
 								</select>
 							</td>
@@ -295,8 +361,9 @@
 			</div>
 		</div>
 	</div>
-	</div>
+</div>
 </body>
+
 <script type="text/javascript">
 	// 등록 팝업 열기 닫기
 	function show() {
@@ -322,62 +389,64 @@
 		};
 	
 		$.ajax(ajaxOption).done(function(data) {
-			$('#content').children().remove();
-			$('#content').html(data);
+			$('#layoutBody').children().remove();
+			$('#layoutBody').html(data);
 		});
 	}
 	
 	// 	검색초기화
 	document.querySelector("#initBtn").addEventListener("click",  function(){callView('emp.do')});
+	
+	
 </script>
 
 <script type="text/javascript">
 	function addEmp() {
-		const EMPCD = frm.EMPCD.value;
-		const ENAME = frm.ENAME.value;
-		const PASSWORD = frm.PASSWORD.value;
-		const JOB = frm.JOB.value;
-		const TEL = frm.TEL.value;
-		const DEPT = frm.DEPT.value;
- 		const AUTHORITY = frm.AUTHORITY.value;
+		const employeeCd = frm.employeeCd.value;
+		const ename = frm.ename.value;
+		const password = frm.password.value;
+		const tel = frm.tel.value;
+		const job = frm.job.value;
+		const department = frm.department.value;
+ 		const authority = frm.authority.value;
 		
-		if (EMPCD == '' || ENAME == '' || PASSWORD == '' || JOB == '' || 
-				TEL == '' || DEPT == '' || AUTHORITY == ''){
-			alert('값을 입력해주세요.');
-			if (EMPCD == '') {
-				$("input[name='EMPCD']").addClass('red');
+		if (employeeCd == '' || ename == '' || password == '' || tel == '' || job == '' || 
+				department == '' || authority == ''){
+			alert('값을 채워넣어주세요');
+			if (employeeCd == '') {
+				$("input[name='employeeCd']").addClass('red');
 			} else {
- 			    $("input[name='EMPCD']").removeClass('red');		
+ 			    $("input[name='employeeCd']").removeClass('red');		
 			}
-			if (ENAME == '') {
-				$("input[name='ENAME']").addClass('red');
+			if (ename == '') {
+				$("input[name='ename']").addClass('red');
 			} else {
- 			    $("input[name='ENAME']").removeClass('red');		
+ 			    $("input[name='ename']").removeClass('red');		
 			}
-			if (PASSWORD == '') {
-				$("input[name='PASSWORD']").addClass('red');
+			if (password == '') {
+				$("input[name='password']").addClass('red');
 			} else {
- 			    $("input[name='PASSWORD']").removeClass('red');		
+ 			    $("input[name='password']").removeClass('red');		
 			}
-			if (JOB == '') {
-				$("select[name='JOB']").addClass('red');
+			if (tel == '') {
+				$("input[name='tel']").addClass('red');
 			} else {
- 			    $("select[name='JOB']").removeClass('red');		
+ 			    $("input[name='tel']").removeClass('red');		
 			}
-			if (TEL == '') {
-				$("select[name='TEL']").addClass('red');
+			if (job == '') {
+				$("select[name='job']").addClass('red');
 			} else {
- 			    $("select[name='TEL']").removeClass('red');		
+ 			    $("select[name='job']").removeClass('red');		
 			}
-			if (DEPT == '') {
-				$("select[name='DEPT']").addClass('red');
+			if (department == '') {
+				$("select[name='department']").addClass('red');
 			} else {
- 			    $("select[name='DEPT']").removeClass('red');		
+ 			    $("select[name='department']").removeClass('red');		
 			}
-			if (AUTHORITY == '') {
-				$("select[name='AUTHORITY']").addClass('red');
+			if (authority == '') {
+				$("select[name='authority']").addClass('red');
 			} else {
- 			    $("select[name='AUTHORITY']").removeClass('red');		
+ 			    $("select[name='authority']").removeClass('red');		
 			}
 		} else {
 			$.ajax({
@@ -385,13 +454,13 @@
 			     url: 'empInsert.do',
 			     traditional: true,
 			     data: {
-			    	 EMPCD : frm.EMPCD.value,
-			    	 ENAME : frm.ENAME.value,
-			    	 PASSWORD : frm.PASSWORD.value,
-			    	 JOB : frm.JOB.value,
-			    	 TEL : frm.TEL.value,
-			    	 DEPT : frm.DEPT.value,
-			    	 AUTHORITY : frm.AUTHORITY.value		    	 
+			    	 employeeCd : frm.employeeCd.value,
+			    	 ename : frm.ename.value,
+			    	 password : frm.password.value,
+			    	 tel : frm.tel.value,
+			    	 job : frm.job.value,
+			    	 department : frm.department.value,
+			    	 authority : frm.authority.value
 			     },
 			     dataType: 'json',
 			     success: function (result) {
@@ -413,23 +482,23 @@
 	function search() {
 				
 		const keyword = {
-				EMPCD : searchBoxx.EMPCD.value,	
-				ENAME : searchBoxx.ENAME.value,	
-				JOB : searchBoxx.JOB.value,
-				TEL : searchBoxx.TEL.value,
-				DEPT : searchBoxx.DEPT.value,	
-				ADDFROMDATE : searchBoxx.ADDFROMDATE.value,	
-				ADDTODATE : searchBoxx.ADDTODATE.value,	
-				AUTHORITY : searchBoxx.AUTHORITY.value,
+				employeeCd : searchBoxx.employeeCd.value,	
+				ename : searchBoxx.ename.value,	
+				job : searchBoxx.job.value,
+				tel : searchBoxx.tel.value,
+				department : searchBoxx.department.value,	
+				addFromDate : searchBoxx.addFromDate.value,	
+				addToDate : searchBoxx.addToDate.value,	
+				authority : searchBoxx.authority.value,
 				del : searchBoxx.del.value,
 				
-				SORTEMPCD : searchBoxx.SORTEMPCD.value,
-				SORTENAME : searchBoxx.SORTENAME.value,
-				SORTJOB : searchBoxx.SORTJOB.value,
-				SORTTEL : searchBoxx.SORTTEL.value,
-				SORTDEPT : searchBoxx.SORTDEPT.value,
-				SORTADDDATE : searchBoxx.SORTADDDATE.value,
-				SORTAUTHORITY : searchBoxx.SORTAUTHORITY.value,
+				sortEmployeeCd : searchBoxx.sortEmployeeCd.value,
+				sortEname : searchBoxx.sortEname.value,
+				sortJob : searchBoxx.sortJob.value,
+				sortTel : searchBoxx.sortTel.value,
+				sortDepartment : searchBoxx.sortDepartment.value,
+				sortAdddate : searchBoxx.sortAdddate.value,
+				sortAuthority : searchBoxx.sortAuthority.value,
 				
 				rowPerPage : itemLimit.rowPerPage.value,
 				
@@ -445,8 +514,8 @@
 		    	keyword: JSON.stringify(keyword)
 		     },
 		     success: function (result) {
-		    	 $('#content').children().remove();
-				 $('#content').html(result);
+		    	 $('#layoutBody').children().remove(); 
+				 $('#layoutBody').html(result);
 			 }
 	   });
 
@@ -498,24 +567,24 @@ $(document).ready(function() {
  		             console.log("배열에 담긴 값 : "+tdArr);
  		             
  		             // td.eq(index)를 통해 값을 가져올 수도 있다.
- 		             EMPCD = tdd.eq(2).text();
- 		             ENAME = tdd.eq(3).text();
- 		             JOB   = tdd.eq(4).text();
- 		             TEL   = tdd.eq(5).text();
- 		       	     DEPT  = tdd.eq(6).text();
- 		     	     AUTHORITY = tdd.eq(7).text();
+ 		             employeeCd = tdd.eq(2).text();
+ 		             ename = tdd.eq(3).text();
+ 		             job = tdd.eq(4).text();
+ 		             tel = tdd.eq(5).text();
+ 		             department = tdd.eq(6).text();
+ 		             authority = tdd.eq(7).text();
  	             
                $.ajax({ //포스트 방식으로 아래의 주소에 데이터 전송
    			     method: 'post', 
    			     url: 'empUpdate.do', 
    			     traditional: true,
    			     data: { //서버로 데이터를 전송할때  키와 벨류로 전달. BuyerController로 buyer객체에 담겨서 보내짐
-   			    	EMPCD: EMPCD,
-   			    	ENAME: ENAME,
-   			    	JOB: JOB,
-   			    	TEL: TEL,
-   			    	DEPT: DEPT,
-   			    	AUTHORITY: AUTHORITY
+   			    	employeeCd: employeeCd,
+   			    	ename: ename,
+   			    	tel: tel,
+   			    	job: job,
+   			    	department: department,
+   			    	authority: authority
    			     },
    			     success: function (result) { //성공했을떄 호출할 콜백을 지정
    			    	 console.log(result);
@@ -574,7 +643,7 @@ $(document).ready(function() {
 			}
 			
 			if (paging.currentPage.value > ${employee.totalPage }) {
-				paging.currentPage.value = ${employee.totalPage }; // 오류
+				paging.currentPage.value = ${employee.totalPage };
 			}
 			
 			search();
@@ -585,82 +654,82 @@ $(document).ready(function() {
 <!-- 정렬 -->
 <script type="text/javascript">
 	function initSort() {
-		searchBoxx.SORTEMPCD.value = 0;
-		searchBoxx.SORTENAME.value = 0;
-		searchBoxx.SORTJOB.value = 0;
-		searchBoxx.SORTTEL.value = 0;
-		searchBoxx.SORTDEPT.value = 0;
-		searchBoxx.SORTADDDATE.value = 0;
-		searchBoxx.SORTAUTHORITY.value = 0;
+		searchBoxx.sortEmployeeCd.value = 0;
+		searchBoxx.sortEname.value = 0;
+		searchBoxx.sortJob.value = 0;
+		searchBoxx.sortTel.value = 0;
+		searchBoxx.sortDepartment.value = 0;
+		searchBoxx.sortAdddate.value = 0;
+		searchBoxx.sortAuthority.value = 0;
 	}
 
-	$('#SORTEMPCD').on('click', function() {
-		if (searchBoxx.SORTEMPCD.value == 0 || searchBoxx.SORTEMPCD.value == 2) {
+	$('#sortEmployeeCd').on('click', function() {
+		if (searchBoxx.sortEmployeeCd.value == 0 || searchBoxx.sortEmployeeCd.value == 2) {
 			initSort();
-			searchBoxx.SORTEMPCD.value = 1;			
-		} else if (searchBoxx.SORTEMPCD.value == 1) {
+			searchBoxx.sortEmployeeCd.value = 1;			
+		} else if (searchBoxx.sortEmployeeCd.value == 1) {
 			initSort();
-			searchBoxx.SORTEMPCD.value = 2;
+			searchBoxx.sortEmployeeCd.value = 2;
 		}		
 		search();
 	});
-	$('#SORTJOB').on('click', function() {
-		if (searchBoxx.SORTJOB.value == 0 || searchBoxx.SORTJOB.value == 2) {
+	$('#sortJob').on('click', function() {
+		if (searchBoxx.sortJob.value == 0 || searchBoxx.sortJob.value == 2) {
 			initSort();
-			searchBoxx.SORTJOB.value = 1;			
-		} else if (searchBoxx.SORTJOB.value == 1) {
+			searchBoxx.sortJob.value = 1;			
+		} else if (searchBoxx.sortJob.value == 1) {
 			initSort();
-			searchBoxx.SORTJOB.value = 2;
+			searchBoxx.sortJob.value = 2;
 		}		
 		search();
 	});
-	$('#SORTTEL').on('click', function() {
-		if (searchBoxx.SORTTEL.value == 0 || searchBoxx.SORTTEL.value == 2) {
+	$('#sortTel').on('click', function() {
+		if (searchBoxx.sortTel.value == 0 || searchBoxx.sortTel.value == 2) {
 			initSort();
-			searchBoxx.SORTTEL.value = 1;			
-		} else if (searchBoxx.SORTTEL.value == 1) {
+			searchBoxx.sortTel.value = 1;			
+		} else if (searchBoxx.sortTel.value == 1) {
 			initSort();
-			searchBoxx.SORTTEL.value = 2;
+			searchBoxx.sortTel.value = 2;
 		}		
 		search();
 	});
-	$('#SORTENAME').on('click', function() {
-		if (searchBoxx.SORTENAME.value == 0 || searchBoxx.SORTENAME.value == 2) {
+	$('#sortEname').on('click', function() {
+		if (searchBoxx.sortEname.value == 0 || searchBoxx.sortEname.value == 2) {
 			initSort();
-			searchBoxx.SORTENAME.value = 1;		
-		} else if (searchBoxx.SORTENAME.value == 1) {
+			searchBoxx.sortEname.value = 1;		
+		} else if (searchBoxx.sortEname.value == 1) {
 			initSort();
-			searchBoxx.SORTENAME.value = 2;
+			searchBoxx.sortEname.value = 2;
 		}		
 		search();
 	});
-	$('#SORTDEPT').on('click', function() {
-		if (searchBoxx.SORTDEPT.value == 0 || searchBoxx.SORTDEPT.value == 2) {
+	$('#sortDepartment').on('click', function() {
+		if (searchBoxx.sortDepartment.value == 0 || searchBoxx.sortDepartment.value == 2) {
 			initSort();
-			searchBoxx.SORTDEPT.value = 1;			
-		} else if (searchBoxx.SORTDEPT.value == 1) {
+			searchBoxx.sortDepartment.value = 1;			
+		} else if (searchBoxx.sortDepartment.value == 1) {
 			initSort();
-			searchBoxx.SORTDEPT.value = 2;
+			searchBoxx.sortDepartment.value = 2;
 		}		
 		search();
 	});
-	$('#SORTADDDATE').on('click', function() {
-		if (searchBoxx.SORTADDDATE.value == 0 || searchBoxx.SORTADDDATE.value == 2) {
+	$('#sortAdddate').on('click', function() {
+		if (searchBoxx.sortAdddate.value == 0 || searchBoxx.sortAdddate.value == 2) {
 			initSort();
-			searchBoxx.SORTADDDATE.value = 1;			
-		} else if (searchBoxx.SORTADDDATE.value == 1) {
+			searchBoxx.sortAdddate.value = 1;			
+		} else if (searchBoxx.sortAdddate.value == 1) {
 			initSort();
-			searchBoxx.SORTADDDATE.value = 2;
+			searchBoxx.sortAdddate.value = 2;
 		}		
 		search();
 	});
-	$('#SORTAUTHORITY').on('click', function() {
-		if (searchBoxx.SORTAUTHORITY.value == 0 || searchBoxx.SORTAUTHORITY.value == 2) {
+	$('#sortAuthority').on('click', function() {
+		if (searchBoxx.sortAuthority.value == 0 || searchBoxx.sortAuthority.value == 2) {
 			initSort();
-			searchBoxx.SORTAUTHORITY.value = 1;			
-		} else if (searchBoxx.SORTAUTHORITY.value == 1) {
+			searchBoxx.sortAuthority.value = 1;			
+		} else if (searchBoxx.sortAuthority.value == 1) {
 			initSort();
-			searchBoxx.SORTAUTHORITY.value = 2;
+			searchBoxx.sortAuthority.value = 2;
 		}		
 		search();
 	});
@@ -676,10 +745,10 @@ $(document).ready(function() {
 		      $("input[name=checkRow]").prop("checked", false);
 		    }
 		}
+		
 		document.querySelector("#th_checkAll").addEventListener("click", checkAll);
 	</script>
 </c:if>
-
 <script type="text/javascript">
 	
 	function deleteAction(){
@@ -708,6 +777,7 @@ $(document).ready(function() {
 			    }
 		  });
 	};
+	
 </script>
 
 <!-- 삭제 항목 복원  -->
@@ -724,7 +794,6 @@ $(document).ready(function() {
 		document.querySelector("#th_deletedCheckAll").addEventListener("click", delCheckAll);
 	</script>
 </c:if>
-
 <script type="text/javascript">
 
 
@@ -765,20 +834,24 @@ function restoreAction(){
 		     traditional: true,
 		     async: false,
 		     data: {
-		    	 DEPT: frm.DEPT.value
+		    	department: frm.department.value
 		     },
 		     success: function (result) {
 		    	 count = result;
 		    	 console.log(count);
 			}
 	   	});
-		if (frm.DEPT.value == '영업'){
+		if (frm.department.value == '영업'){
 			console.log('SAL' + count);
-			frm.EMPCD.value = 'SAL' + count;
+			frm.employeeCd.value = 'SAL' + count;
 		}
-		if (frm.DEPT.value == '관리'){
-			console.log('MNG' + count);
-			frm.EMPCD.value = 'MNG' + count;
+		if (frm.department.value == '물류'){
+			console.log('DIS' + count);
+			frm.employeeCd.value = 'DIS' + count;
+		}
+		if (frm.department.value == '직원'){
+			console.log('EMP' + count);
+			frm.employeeCd.value = 'EMP' + count;
 		}
 	});
 </script>
@@ -790,9 +863,12 @@ function restoreAction(){
 		
 		$( ".excel:checked" ).each (function (){
 			 let thisRow = $(this).closest('tr');
+			 
+//			orderNo = thisRow.find('td:eq(2)').find('input').val();
+//			productCD = thisRow.find('td:eq(3)').find('input').val();
 			  
 			 const item = {
-					 EMPCD : thisRow.find('td:eq(0)').find('input').val()
+				employeeCd : thisRow.find('td:eq(0)').find('input').val()
 			 }
 
 			 checkRow.push(item);
@@ -861,13 +937,11 @@ $(document).ready(function() {
 		search: true,
 		searchText: '검색어 입력',
 	});
-	$('select.AUTHORITY')[0].sumo.selectItem("${buyer.AUTHORITY }");
+	$('select.authority')[0].sumo.selectItem("${buyer.authority }");
 	
-	$('select.JOB')[0].sumo.selectItem("${buyer.JOB }");
+	$('select.job')[0].sumo.selectItem("${buyer.job }");
 	
-	$('select.TEL')[0].sumo.selectItem("${buyer.TEL }");
-	
-	$('select.DEPT')[0].sumo.selectItem("${buyer.DEPT }");
+	$('select.department')[0].sumo.selectItem("${buyer.department }");
 	
 
 	
@@ -876,13 +950,13 @@ $(document).ready(function() {
 
 <!-- 날짜 최소 / 최대 제한 주기 -->
 <script type="text/javascript">
-	$('input[name="ADDFROMDATE"]').on('change', function(){
+	$('input[name="addFromDate"]').on('change', function(){
 		const minDate= $(this).val();
-		$('input[name="ADDTODATE"]').attr('min',minDate);
+		$('input[name="addToDate"]').attr('min',minDate);
 	});
-	$('input[name="ADDTODATE"]').on('change', function(){
+	$('input[name="addToDate"]').on('change', function(){
 		const maxDate= $(this).val();
-		$('input[name="ADDFROMDATE"]').attr('max',maxDate);
+		$('input[name="addFromDate"]').attr('max',maxDate);
 	});
 </script>
 </html>

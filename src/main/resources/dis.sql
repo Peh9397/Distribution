@@ -21,10 +21,12 @@ create table PRODUCT (
   constraint check_DEL check(DEL in ('n', 'y'))
 );
 ------구매자
+select * from BUYER
+
 create table BUYER ( 
   BUYERCD varchar2(50) not null primary key, --구매자 코드
   BNAME varchar2(100) not null, --회사명
-  COMPANYNO char(10) not null, --사업자등록번호
+  COMPANYNO char(10), --사업자등록번호
   CEO VARCHAR2(40), --대표자
   ADDRESS varchar2(150) not null, --소재지
   MANAGER varchar2(20) not null, --담당자
@@ -36,6 +38,26 @@ create table BUYER (
   STATEDATE date, --최종변경일
   
   constraint check_DEL2 check(DEL in ('n', 'y'))
+);
+
+------ 직원
+select * from EMPLOYEE;
+
+create table EMPLOYEE ( 
+  EMPLOYEECD   varchar2(50) 			not null primary key, -- 직원코드
+  ENAME  varchar2(20)  	    	not null, 			  -- 직원명
+  PASSWORD varchar2(20) 		not null, 			  -- 비밀번호
+  DEPARTMENT varchar2(20) 			not null,			  -- 부서
+  JOB varchar2(20) 				not null,			  -- 직책
+  TEL varchar2(20) 				not null,			  -- 연락처
+  AUTHORITY char(1) default 'N' not null,			  -- 승인권한
+  ADDDATE date default sysdate 	not null,			  -- 입사일
+  DEL char(1)  default 'N' 		not null,			  -- 삭제
+  REMARK varchar2(100) ,							  -- 비고
+  STATEDATE date, 									  -- 최종변경일
+  
+  constraint check_DEL5 check(DEL in ('N', 'Y')),
+   constraint check_AUTHORITY check(AUTHORITY in ('N', 'Y'))
 );
 ------판매가
 create table PRICING (
@@ -79,19 +101,4 @@ create table ORDER_APP (
   DEL char(1) default 'n', --삭제
   STATEDATE date, --최종변경일
   constraint check_DEL4 check(DEL in ('N', 'Y'))
-);
------- 직원
-create table EMPLOYEE ( 
-  EMPCD varchar2(50) not null primary key, --직원코드
-  ENAME varchar2(20) not null, -- 직원명
-  PASSWORD varchar2(20) not null, -- 비밀번호
-  DEPT varchar2(20) not null,-- 부서
-  JOB varchar2(20) not null,--직책
-  TEL varchar2(20) not null, -- 연락처
-  AUTHORITY char(1) default 'n' not null, --승인권한
-  ADDDATE date default sysdate not null,--입사일
-  DEL char(1)  default 'n' not null,--삭제
-  REMARK varchar2(100) ,--비고
-  STATEDATE date, -- 최종변경일
-  constraint check_DEL5 check(DEL in ('N', 'Y'))
 );
