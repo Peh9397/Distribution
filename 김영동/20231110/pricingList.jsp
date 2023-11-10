@@ -189,6 +189,11 @@
 		
 	}
 </script>
+
+<!-- 엑셀 제목날짜입력  -->
+<jsp:useBean id="date1" class="java.util.Date"></jsp:useBean>
+
+
 </head>
 <body>
 	<div class="container">
@@ -307,6 +312,7 @@
 			</div>
 
 			<!-- 리스트 박스 -->
+			
 			<div class="priceList-div">
 				<table class="table">
 					<tr>
@@ -986,8 +992,8 @@
 			 const pricing = {
 				buyerCd : thisRow.find('td:eq(2)').find('input').val(),
 				productCd : thisRow.find('td:eq(4)').find('input').val(),
-				startdate : thisRow.find('td:eq(7)').find('input').val(),
-				enddate : thisRow.find('td:eq(8)').find('input').val()
+				startDate : thisRow.find('td:eq(7)').find('input').val(),
+				endDate : thisRow.find('td:eq(8)').find('input').val()
 			 }
 
 			 checkRow.push(pricing);
@@ -1031,7 +1037,7 @@
                     var url = window.URL || window.webkitURL;
                     link = url.createObjectURL(blob);
                     var a = $("<a />");
-                    a.attr("download", "test.xlsx");
+                    a.attr("download", "Pricing_<fmt:formatDate value='${date1 }' pattern='yyyyMMdd'/>.xlsx");
                     a.attr("href", link);
                     $("body").append(a);
                     a[0].click();
